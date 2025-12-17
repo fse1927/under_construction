@@ -82,8 +82,15 @@ export default function ParcoursRunner({ initialQuestions, level }: ParcoursRunn
         );
     }
 
-    // New Schema: options is already an array of strings
-    const options = currentQuestion.options || [];
+    // Combine answer with options for 4 total choices (like useQuiz.ts)
+    const allOptions = Array.from(new Set([currentQuestion.answer, ...(currentQuestion.options || [])]));
+    const [shuffledOptions, setShuffledOptions] = useState<string[]>([]);
+
+    // Shuffle options when question changes
+    useEffect(() => {
+        const options = Array.from(new Set([currentQuestion.answer, ...(currentQuestion.options || [])]));
+        setShuffledOptions(options.sort(() => 0.5 - Math.random()));
+    }, [currentQuestion.id, currentQuestion.answer, currentQuestion.options]);
 
     return (
         <div className="max-w-2xl mx-auto space-y-6 p-4">
@@ -115,7 +122,7 @@ export default function ParcoursRunner({ initialQuestions, level }: ParcoursRunn
                     </div>
 
                     <div className="grid gap-3">
-                        {options.map((option, idx) => {
+                        {shuffledOptions.map((option, idx) => {
                             const isSelected = selectedAnswer === option;
                             const isCorrectOption = option === currentQuestion.answer;
 
