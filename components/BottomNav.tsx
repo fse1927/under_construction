@@ -53,6 +53,8 @@ export default function BottomNav() {
                         <Link
                             key={item.href}
                             href={item.href}
+                            aria-label={item.label}
+                            aria-current={isActive ? "page" : undefined}
                             className={clsx(
                                 "relative flex flex-col items-center justify-center w-full h-full transition-all duration-300 group",
                                 isActive ? "text-primary translate-y-[-2px]" : "text-gray-400 hover:text-gray-600"
@@ -60,7 +62,7 @@ export default function BottomNav() {
                         >
                             {/* Active Indicator Background */}
                             {isActive && (
-                                <div className="absolute inset-x-3 top-2 bottom-2 bg-primary/10 rounded-2xl -z-10 transition-all duration-300 animate-in fade-in zoom-in" />
+                                <div className="absolute inset-x-3 top-2 bottom-2 bg-primary/10 rounded-2xl -z-10 transition-all duration-300 animate-in fade-in zoom-in" aria-hidden="true" />
                             )}
 
                             <Icon
@@ -68,6 +70,7 @@ export default function BottomNav() {
                                     "w-6 h-6 mb-1.5 transition-transform duration-300",
                                     isActive ? "stroke-[2.5px] scale-110" : "group-hover:scale-105"
                                 )}
+                                aria-hidden="true"
                             />
                             <span className={clsx(
                                 "text-[10px] font-bold tracking-wide transition-all",

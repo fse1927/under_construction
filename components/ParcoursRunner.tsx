@@ -145,8 +145,11 @@ export default function ParcoursRunner({ initialQuestions, level }: ParcoursRunn
                                     key={idx}
                                     onClick={() => handleSelectAnswer(option)}
                                     disabled={isAnswerChecked}
+                                    role="radio"
+                                    aria-checked={isSelected}
+                                    aria-label={`Option ${idx + 1}: ${option}`}
                                     className={cn(
-                                        "w-full p-4 rounded-xl border-2 text-left transition-all duration-200 flex items-center justify-between group",
+                                        "w-full p-4 rounded-xl border-2 text-left transition-all duration-200 flex items-center justify-between group focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2",
                                         variant
                                     )}
                                 >

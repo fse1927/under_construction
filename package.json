@@ -1,12 +1,13 @@
 {
-  "name": "temp-app",
-  "version": "0.1.0",
+  "name": "france-citoyen",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "lint:fix": "eslint --fix"
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.2.4",
