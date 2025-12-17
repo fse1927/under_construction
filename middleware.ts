@@ -3,7 +3,9 @@ import { updateSession } from './lib/supabase/middleware'
 
 export async function middleware(request: NextRequest) {
     try {
-        return await updateSession(request)
+        // Temporary bypass to debug Vercel 500 Error
+        // return await updateSession(request)
+        return NextResponse.next();
     } catch (e) {
         console.error('Middleware error:', e);
         // Fallback to allow request to proceed if middleware fails
