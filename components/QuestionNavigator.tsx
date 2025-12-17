@@ -26,12 +26,27 @@ export default function QuestionNavigator({
     const router = useRouter();
     const [isNavigating, setIsNavigating] = useState(false);
 
-    // Motion values for swipe
+    // Motion values for swipe - improved for better finger-following
     const x = useMotionValue(0);
-    const rotate = useTransform(x, [-200, 0, 200], [-8, 0, 8]);
-    const opacity = useTransform(x, [-200, -100, 0, 100, 200], [0.5, 0.8, 1, 0.8, 0.5]);
+    // Less rotation for more natural feel
+    const rotate = useTransform(x, [-300, 0, 300], [-5, 0, 5]);
+    // Smoother opacity transition
+    const opacity = useTransform(x, [-300, -150, 0, 150, 300], [0.6, 0.85, 1, 0.85, 0.6]);
+    // Scale down slightly when dragging
+    const scale = useTransform(x, [-300, 0, 300], [0.95, 1, 0.95]);
+    // Shadow intensity based on drag
+    const boxShadow = useTransform(
+        x,
+        [-200, 0, 200],
+        [
+            '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+            '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
+            '0 25px 50px -12px rgba(0, 0, 0, 0.25)'
+        ]
+    );
 
-    const SWIPE_THRESHOLD = 80;
+    // Lower threshold for easier swiping on mobile
+    const SWIPE_THRESHOLD = 60;
 
     // Handle swipe navigation
     const handleSwipeNavigate = useCallback((targetId: string) => {
@@ -125,11 +140,13 @@ export default function QuestionNavigator({
             <motion.div
                 drag="x"
                 dragConstraints={{ left: 0, right: 0 }}
-                dragElastic={0.2}
+                dragElastic={0.6}
+                dragTransition={{ bounceStiffness: 300, bounceDamping: 30 }}
                 onDragEnd={handleDragEnd}
-                style={{ x, rotate, opacity }}
-                className="cursor-grab active:cursor-grabbing touch-pan-y"
+                style={{ x, rotate, opacity, scale, boxShadow }}
+                className="cursor-grab active:cursor-grabbing touch-none select-none"
                 whileTap={{ cursor: "grabbing" }}
+                whileDrag={{ cursor: "grabbing" }}
             >
                 {/* Page shadow effect for notebook feel */}
                 <div className="relative">
@@ -184,8 +201,8 @@ export default function QuestionNavigator({
                         <div
                             key={i}
                             className={`rounded-full transition-all duration-300 ${isActive
-                                    ? 'w-6 h-2 bg-primary'
-                                    : 'w-2 h-2 bg-gray-300'
+                                ? 'w-6 h-2 bg-primary'
+                                : 'w-2 h-2 bg-gray-300'
                                 }`}
                         />
                     );
