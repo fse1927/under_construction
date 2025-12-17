@@ -205,16 +205,21 @@ export async function getUserStats(): Promise<UserStats> {
 }
 
 export async function getUserProgressList() {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return [];
+    try {
+        const supabase = await createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return [];
 
-    const { data } = await supabase
-        .from('user_progress')
-        .select('module_id')
-        .eq('user_id', user.id);
+        const { data } = await supabase
+            .from('user_progress')
+            .select('module_id')
+            .eq('user_id', user.id);
 
-    return (data || []).map(row => row.module_id);
+        return (data || []).map(row => row.module_id);
+    } catch (e) {
+        console.error('getUserProgressList error:', e);
+        return [];
+    }
 }
 
 export async function getGlobalProgress() {

@@ -15,48 +15,63 @@ export async function getQuestions(
     page: number = 1,
     limit: number = 20
 ) {
-    const supabase = await createClient();
+    try {
+        const supabase = await createClient();
 
-    let query = supabase
-        .from('questions')
-        .select('*', { count: 'exact' })
-        .eq('type', 'quiz');
+        let query = supabase
+            .from('questions')
+            .select('*', { count: 'exact' })
+            .eq('type', 'quiz');
 
-    if (filter.theme) {
-        query = query.eq('theme', filter.theme);
+        if (filter.theme) {
+            query = query.eq('theme', filter.theme);
+        }
+
+        if (filter.difficulty) {
+            query = query.eq('difficulty', filter.difficulty);
+        }
+
+        if (filter.chapter) {
+            query = query.eq('info_cards_chapter', filter.chapter);
+        }
+
+        // Simple search on question text
+        if (filter.search) {
+            query = query.ilike('question', `%${filter.search}%`);
+        }
+
+        const from = (page - 1) * limit;
+        const to = from + limit - 1;
+
+        const { data, error, count } = await query
+            .range(from, to)
+            .order('created_at', { ascending: true });
+
+        if (error) {
+            console.error('Error fetching questions:', error);
+            return {
+                questions: [],
+                total: 0,
+                page,
+                totalPages: 0
+            };
+        }
+
+        return {
+            questions: data as any[], // Cast to Question type after fixing types
+            total: count || 0,
+            page,
+            totalPages: count ? Math.ceil(count / limit) : 0
+        };
+    } catch (e) {
+        console.error('getQuestions error:', e);
+        return {
+            questions: [],
+            total: 0,
+            page,
+            totalPages: 0
+        };
     }
-
-    if (filter.difficulty) {
-        query = query.eq('difficulty', filter.difficulty);
-    }
-
-    if (filter.chapter) {
-        query = query.eq('info_cards_chapter', filter.chapter);
-    }
-
-    // Simple search on question text
-    if (filter.search) {
-        query = query.ilike('question', `%${filter.search}%`);
-    }
-
-    const from = (page - 1) * limit;
-    const to = from + limit - 1;
-
-    const { data, error, count } = await query
-        .range(from, to)
-        .order('created_at', { ascending: true });
-
-    if (error) {
-        console.error('Error fetching questions:', error);
-        throw new Error('Failed to fetch questions');
-    }
-
-    return {
-        questions: data as any[], // Cast to Question type after fixing types
-        total: count || 0,
-        page,
-        totalPages: count ? Math.ceil(count / limit) : 0
-    };
 }
 
 export async function getInterviewQuestions(userSituation?: string) {
