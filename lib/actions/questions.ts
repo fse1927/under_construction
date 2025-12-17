@@ -45,7 +45,7 @@ export async function getQuestions(
 
         const { data, error, count } = await query
             .range(from, to)
-            .order('created_at', { ascending: true });
+            .order('id', { ascending: true });
 
         if (error) {
             console.error('Error fetching questions:', error);
