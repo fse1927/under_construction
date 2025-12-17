@@ -4,6 +4,20 @@ import { getRandomQuizQuestions } from '@/lib/actions/questions'; // Server acti
 import { saveQuizResult } from '@/app/tester/actions';
 import { QuizMode, QuizState } from './types';
 
+// Helper to get exactly 4 shuffled options (3 incorrect + 1 correct answer)
+function getShuffledOptions(question: Question): string[] {
+    const correctAnswer = question.answer;
+    // Filter out the correct answer from options, then pick up to 3 random incorrect options
+    const incorrectOptions = (question.options || []).filter(opt => opt !== correctAnswer);
+
+    // Shuffle incorrect options and pick 3
+    const shuffledIncorrect = incorrectOptions.sort(() => 0.5 - Math.random()).slice(0, 3);
+
+    // Combine with correct answer and shuffle
+    const allOptions = [correctAnswer, ...shuffledIncorrect];
+    return allOptions.sort(() => 0.5 - Math.random());
+}
+
 export function useQuiz(mode: QuizMode) {
     const [state, setState] = useState<QuizState>({
         questions: [],
@@ -55,8 +69,7 @@ export function useQuiz(mode: QuizMode) {
             }
 
             const initialQuestion = data[0];
-            const options = Array.from(new Set([initialQuestion.answer, ...initialQuestion.options]));
-            const shuffled = options.sort(() => 0.5 - Math.random());
+            const shuffled = getShuffledOptions(initialQuestion);
 
             setState({
                 questions: data,
@@ -88,8 +101,7 @@ export function useQuiz(mode: QuizMode) {
             const nextIndex = state.currentIndex + 1;
             const nextQ = state.questions[nextIndex];
             // Prepare next question logic
-            const options = Array.from(new Set([nextQ.answer, ...nextQ.options]));
-            const shuffled = options.sort(() => 0.5 - Math.random());
+            const shuffled = getShuffledOptions(nextQ);
 
             setState(prev => ({
                 ...prev,
@@ -160,14 +172,14 @@ export function useQuiz(mode: QuizMode) {
                 if (prev.currentIndex < prev.questions.length - 1) {
                     const nextIndex = prev.currentIndex + 1;
                     const nextQ = prev.questions[nextIndex];
-                    const options = Array.from(new Set([nextQ.answer, ...nextQ.options]));
+                    const shuffled = getShuffledOptions(nextQ);
 
                     return {
                         ...prev,
                         score: newScore,
                         missedQuestions: newMissed,
                         currentIndex: nextIndex,
-                        shuffledOptions: options.sort(() => 0.5 - Math.random()),
+                        shuffledOptions: shuffled,
                         selectedAnswer: null,
                         isAnswerChecked: false
                     };
