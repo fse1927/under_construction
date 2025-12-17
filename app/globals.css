@@ -124,3 +124,68 @@ body {
 .delay-300 {
   animation-delay: 300ms;
 }
+
+/* ========================================
+   MOBILE-FRIENDLY IMPROVEMENTS
+   ======================================== */
+
+/* Ensure minimum touch target size (44x44px recommended by Apple/Google) */
+button, a, [role="button"] {
+  min-height: 44px;
+}
+
+/* Smooth scrolling for better mobile experience */
+html {
+  scroll-behavior: smooth;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Prevent text selection on interactive elements */
+button, [role="button"] {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Better touch feedback */
+button:active, [role="button"]:active {
+  transform: scale(0.98);
+}
+
+/* Safe area padding for notched phones (iPhone X+) */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .pb-safe {
+    padding-bottom: calc(1.5rem + env(safe-area-inset-bottom));
+  }
+  
+  nav.fixed.bottom-0 {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+/* Improve text readability on mobile */
+@media (max-width: 640px) {
+  html {
+    font-size: 16px; /* Prevent zoom on input focus */
+  }
+  
+  /* Larger touch targets for options/cards on mobile */
+  .grid.gap-3 button {
+    min-height: 56px;
+    padding: 1rem;
+  }
+  
+  /* Better spacing for mobile */
+  .space-y-6 > * + * {
+    margin-top: 1.25rem;
+  }
+}
+
+/* Prevent horizontal scroll on mobile */
+body {
+  overflow-x: hidden;
+}
+
+/* Fix for iOS input zoom */
+input, select, textarea {
+  font-size: 16px;
+}
