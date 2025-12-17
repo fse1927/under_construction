@@ -1,0 +1,288 @@
+import { getUserProfile, updateUserProfile } from './actions';
+import { getGlobalProgress } from '@/lib/actions/user-progress';
+import { signout } from '@/app/(auth)/actions';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { User, Trophy, Activity, LogOut, Settings, Award } from 'lucide-react';
+import { redirect } from 'next/navigation';
+import ThemeToggle from '@/components/ThemeToggle';
+import { HistoryChart } from '@/components/profile/HistoryChart';
+import { AdminLink } from '@/components/admin/AdminLink';
+
+export const dynamic = 'force-dynamic';
+
+export const metadata = {
+    title: 'Mon Profil | Réussite France Citoyen',
+    description: 'Suivez votre progression, vos scores et gérez vos informations personnelles.',
+};
+
+export default async function ProfilPage() {
+    const data = await getUserProfile();
+    const globalProgress = await getGlobalProgress();
+
+    if (!data) {
+        redirect('/login');
+    }
+
+    const { user, stats } = data;
+
+    return (
+        <div className="min-h-[calc(100vh-80px)] bg-gray-50/50 dark:bg-gray-950 p-4 pb-32 max-w-2xl mx-auto space-y-8">
+            <header className="flex items-center justify-between sticky top-0 z-30 bg-gray-50/80 dark:bg-gray-950/80 backdrop-blur-md py-4 -mx-4 px-4 border-b border-gray-200/50 dark:border-gray-800/50 transition-all">
+                {/* ... existing header content ... */}
+                <div>
+                    <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">Mon Profil</h1>
+                    <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Gérez votre progression et vos paramètres.</p>
+                </div>
+                <div className="flex items-center gap-2">
+                    <AdminLink isAdmin={user.is_admin || false} />
+                    <ThemeToggle />
+                    <form action={signout}>
+                        <Button variant="ghost" size="icon" className="text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-full transition-colors">
+                            <LogOut className="w-5 h-5" />
+                            <span className="sr-only">Se déconnecter</span>
+                        </Button>
+                    </form>
+                </div>
+            </header>
+
+            {/* User Info Card */}
+            <div className="animate-in fade-in slide-in-from-bottom-5 duration-700 delay-100">
+                <Card className="dark:bg-slate-900 dark:border-slate-800 border-none shadow-md overflow-hidden relative">
+                    {/* ... existing card content ... */}
+                    <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-primary to-blue-400"></div>
+                    <CardHeader className="flex flex-row items-center gap-5 pb-4">
+                        <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-2xl dark:from-blue-900/20 dark:to-blue-800/20 shadow-inner">
+                            <User className="w-8 h-8 text-primary dark:text-blue-400" />
+                        </div>
+                        <div className="space-y-1">
+                            <CardTitle className="text-xl dark:text-white">{user.nom_prenom || 'Apprenant'}</CardTitle>
+                            <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">{user.email}</p>
+                            {user.profil_situation && (
+                                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-200 border border-blue-100 dark:border-blue-800/50 mt-1">
+                                    {user.profil_situation}
+                                </span>
+                            )}
+                        </div>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="bg-gray-50 dark:bg-slate-950/50 rounded-xl p-4 border border-gray-100 dark:border-slate-800">
+                            <form action={updateUserProfile} className="space-y-6">
+                                <h3 className="text-sm font-bold text-gray-700 flex items-center gap-2 dark:text-gray-300">
+                                    <Settings className="w-4 h-4 text-gray-400" />
+                                    Mettre à jour mes informations
+                                </h3>
+
+                                {/* Basic Info */}
+                                <div className="grid gap-4 sm:grid-cols-3">
+                                    <div className="space-y-1.5">
+                                        <label className="text-xs font-medium text-gray-500 dark:text-gray-400">Nom Prénom</label>
+                                        <input
+                                            name="nom_prenom"
+                                            defaultValue={user.nom_prenom || ''}
+                                            placeholder="Votre nom complet"
+                                            className="flex h-10 w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm shadow-sm transition-all focus:border-primary focus:ring-2 focus:ring-primary/20 dark:border-slate-700 dark:bg-slate-900 dark:text-white"
+                                        />
+                                    </div>
+                                    <div className="space-y-1.5">
+                                        <label className="text-xs font-medium text-gray-500 dark:text-gray-400">Sexe</label>
+                                        <select
+                                            name="sexe"
+                                            defaultValue={user.sexe || ''}
+                                            className="flex h-10 w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm shadow-sm transition-all focus:border-primary focus:ring-2 focus:ring-primary/20 dark:border-slate-700 dark:bg-slate-900 dark:text-white"
+                                        >
+                                            <option value="">Sélectionner...</option>
+                                            <option value="M">Masculin</option>
+                                            <option value="F">Féminin</option>
+                                        </select>
+                                    </div>
+                                    <div className="space-y-1.5">
+                                        <label className="text-xs font-medium text-gray-500 dark:text-gray-400">Situation</label>
+                                        <select
+                                            name="profil_situation"
+                                            defaultValue={user.profil_situation || ''}
+                                            className="flex h-10 w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm shadow-sm transition-all focus:border-primary focus:ring-2 focus:ring-primary/20 dark:border-slate-700 dark:bg-slate-900 dark:text-white"
+                                        >
+                                            <option value="">Sélectionner...</option>
+                                            <option value="Célibataire">Célibataire</option>
+                                            <option value="Marié">Marié{user.sexe === 'F' ? 'e' : ''}</option>
+                                            <option value="Pacsé">Pacsé{user.sexe === 'F' ? 'e' : ''}</option>
+                                            <option value="Divorcé">Divorcé{user.sexe === 'F' ? 'e' : ''}</option>
+                                            <option value="Veuf">Veuf{user.sexe === 'F' ? 've' : ''}</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                {/* Personal Info */}
+                                <div className="pt-4 border-t border-gray-100 dark:border-slate-800">
+                                    <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Informations Personnelles</h4>
+                                    <div className="grid gap-4 sm:grid-cols-2">
+                                        <div className="space-y-1.5">
+                                            <label className="text-xs font-medium text-gray-500 dark:text-gray-400">Profession</label>
+                                            <input
+                                                name="profession"
+                                                defaultValue={user.profession || ''}
+                                                placeholder="Votre métier actuel"
+                                                className="flex h-10 w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm shadow-sm transition-all focus:border-primary focus:ring-2 focus:ring-primary/20 dark:border-slate-700 dark:bg-slate-900 dark:text-white"
+                                            />
+                                        </div>
+                                        <div className="space-y-1.5">
+                                            <label className="text-xs font-medium text-gray-500 dark:text-gray-400">Date de naissance</label>
+                                            <input
+                                                type="date"
+                                                name="date_naissance"
+                                                defaultValue={user.date_naissance || ''}
+                                                className="flex h-10 w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm shadow-sm transition-all focus:border-primary focus:ring-2 focus:ring-primary/20 dark:border-slate-700 dark:bg-slate-900 dark:text-white"
+                                            />
+                                        </div>
+                                        <div className="space-y-1.5">
+                                            <label className="text-xs font-medium text-gray-500 dark:text-gray-400">Pays de naissance</label>
+                                            <input
+                                                name="pays_naissance"
+                                                defaultValue={user.pays_naissance || ''}
+                                                placeholder="Ex: Maroc, Algérie, Tunisie..."
+                                                className="flex h-10 w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm shadow-sm transition-all focus:border-primary focus:ring-2 focus:ring-primary/20 dark:border-slate-700 dark:bg-slate-900 dark:text-white"
+                                            />
+                                        </div>
+                                        <div className="space-y-1.5">
+                                            <label className="text-xs font-medium text-gray-500 dark:text-gray-400">Nationalité d'origine</label>
+                                            <input
+                                                name="nationalite_origine"
+                                                defaultValue={user.nationalite_origine || ''}
+                                                placeholder="Votre nationalité actuelle"
+                                                className="flex h-10 w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm shadow-sm transition-all focus:border-primary focus:ring-2 focus:ring-primary/20 dark:border-slate-700 dark:bg-slate-900 dark:text-white"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* France-specific */}
+                                <div className="pt-4 border-t border-gray-100 dark:border-slate-800">
+                                    <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Situation en France</h4>
+                                    <div className="grid gap-4 sm:grid-cols-3">
+                                        <div className="space-y-1.5">
+                                            <label className="text-xs font-medium text-gray-500 dark:text-gray-400">Ville de résidence</label>
+                                            <input
+                                                name="ville_residence"
+                                                defaultValue={user.ville_residence || ''}
+                                                placeholder="Ex: Paris, Lyon..."
+                                                className="flex h-10 w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm shadow-sm transition-all focus:border-primary focus:ring-2 focus:ring-primary/20 dark:border-slate-700 dark:bg-slate-900 dark:text-white"
+                                            />
+                                        </div>
+                                        <div className="space-y-1.5">
+                                            <label className="text-xs font-medium text-gray-500 dark:text-gray-400">Arrivée en France</label>
+                                            <input
+                                                type="date"
+                                                name="date_arrivee_france"
+                                                defaultValue={user.date_arrivee_france || ''}
+                                                className="flex h-10 w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm shadow-sm transition-all focus:border-primary focus:ring-2 focus:ring-primary/20 dark:border-slate-700 dark:bg-slate-900 dark:text-white"
+                                            />
+                                        </div>
+                                        <div className="space-y-1.5">
+                                            <label className="text-xs font-medium text-gray-500 dark:text-gray-400">Niveau de français</label>
+                                            <select
+                                                name="niveau_francais"
+                                                defaultValue={user.niveau_francais || ''}
+                                                className="flex h-10 w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm shadow-sm transition-all focus:border-primary focus:ring-2 focus:ring-primary/20 dark:border-slate-700 dark:bg-slate-900 dark:text-white"
+                                            >
+                                                <option value="">Sélectionner...</option>
+                                                <option value="A1">A1 - Débutant</option>
+                                                <option value="A2">A2 - Élémentaire</option>
+                                                <option value="B1">B1 - Intermédiaire</option>
+                                                <option value="B2">B2 - Avancé</option>
+                                                <option value="C1">C1 - Autonome</option>
+                                                <option value="C2">C2 - Maîtrise</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="pt-4 flex justify-end">
+                                    <Button type="submit" className="px-8 font-semibold shadow-sm hover:shadow active:scale-95 transition-all">
+                                        Enregistrer les modifications
+                                    </Button>
+                                </div>
+                            </form>
+                        </div>
+                    </CardContent>
+                </Card>
+            </div>
+
+            {/* Global Progress Bar */}
+            <div className="animate-in fade-in slide-in-from-bottom-5 duration-700 delay-200">
+                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 dark:bg-slate-900 dark:border-slate-800">
+                    <div className="flex justify-between items-center mb-2">
+                        <h3 className="font-bold text-gray-900 dark:text-white">Progression Globale</h3>
+                        <span className="text-sm font-bold text-primary">{globalProgress}%</span>
+                    </div>
+                    <div className="w-full bg-gray-100 rounded-full h-3 dark:bg-gray-800 overflow-hidden">
+                        <div
+                            className="bg-primary h-3 rounded-full transition-all duration-1000 ease-out"
+                            style={{ width: `${globalProgress}%` }}
+                        ></div>
+                    </div>
+                    <p className="text-xs text-gray-500 mt-2 text-right">Apprentissage du contenu</p>
+                </div>
+            </div>
+
+            {/* Stats Grid */}
+            <div className="grid grid-cols-2 gap-4 animate-in fade-in slide-in-from-bottom-5 duration-700 delay-300">
+                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col items-center justify-center gap-2 hover:border-green-200 hover:shadow-green-100/50 transition-all dark:bg-slate-900 dark:border-slate-800 dark:hover:border-green-900/30">
+                    <div className="bg-green-100 p-3 rounded-full dark:bg-green-900/30 mb-1">
+                        <Activity className="w-6 h-6 text-green-600 dark:text-green-400" />
+                    </div>
+                    <span className="text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">
+                        {stats.totalTests}
+                    </span>
+                    <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Tests Réalisés</span>
+                </div>
+
+                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col items-center justify-center gap-2 hover:border-orange-200 hover:shadow-orange-100/50 transition-all dark:bg-slate-900 dark:border-slate-800 dark:hover:border-orange-900/30">
+                    <div className="bg-orange-100 p-3 rounded-full dark:bg-orange-900/30 mb-1">
+                        <Trophy className="w-6 h-6 text-orange-600 dark:text-orange-400" />
+                    </div>
+                    <span className="text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">
+                        {Math.round(stats.avgScore)}<span className="text-lg text-gray-400">%</span>
+                    </span>
+                    <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Score Moyen</span>
+                </div>
+            </div>
+
+            {/* History Chart */}
+            {stats.history && stats.history.length > 0 && (
+                <div className="animate-in fade-in slide-in-from-bottom-5 duration-700 delay-200">
+                    <HistoryChart history={stats.history} />
+                </div>
+            )}
+
+            {/* Badges Section */}
+            <div className="animate-in fade-in slide-in-from-bottom-5 duration-700 delay-300">
+                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 dark:bg-slate-900 dark:border-slate-800">
+                    <h3 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2 dark:text-white">
+                        <Award className="w-5 h-5 text-yellow-500" />
+                        Mes Badges
+                    </h3>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                        {/* Badge 1 */}
+                        <div className={`p-4 rounded-xl border flex flex-col items-center gap-2 transition-all ${stats.totalTests >= 1 ? 'bg-yellow-50 border-yellow-200 dark:bg-yellow-900/10 dark:border-yellow-900/30 scale-100 shadow-sm' : 'bg-gray-50/50 border-gray-100 grayscale opacity-60 dark:bg-slate-800/50 dark:border-slate-800'}`}>
+                            <div className="text-3xl filter drop-shadow-sm">🌱</div>
+                            <p className={`text-xs font-bold ${stats.totalTests >= 1 ? 'text-yellow-800 dark:text-yellow-500' : 'text-gray-400'}`}>Débutant</p>
+                        </div>
+
+                        {/* Badge 2 */}
+                        <div className={`p-4 rounded-xl border flex flex-col items-center gap-2 transition-all ${stats.totalTests >= 5 ? 'bg-blue-50 border-blue-200 dark:bg-blue-900/10 dark:border-blue-900/30 scale-100 shadow-sm' : 'bg-gray-50/50 border-gray-100 grayscale opacity-60 dark:bg-slate-800/50 dark:border-slate-800'}`}>
+                            <div className="text-3xl filter drop-shadow-sm">📚</div>
+                            <p className={`text-xs font-bold ${stats.totalTests >= 5 ? 'text-blue-800 dark:text-blue-400' : 'text-gray-400'}`}>Assidu</p>
+                        </div>
+
+                        {/* Badge 3 */}
+                        <div className={`p-4 rounded-xl border flex flex-col items-center gap-2 transition-all ${stats.avgScore >= 80 && stats.totalTests >= 1 ? 'bg-purple-50 border-purple-200 dark:bg-purple-900/10 dark:border-purple-900/30 scale-100 shadow-sm' : 'bg-gray-50/50 border-gray-100 grayscale opacity-60 dark:bg-slate-800/50 dark:border-slate-800'}`}>
+                            <div className="text-3xl filter drop-shadow-sm">🎓</div>
+                            <p className={`text-xs font-bold ${stats.avgScore >= 80 ? 'text-purple-800 dark:text-purple-400' : 'text-gray-400'}`}>Expert</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}
