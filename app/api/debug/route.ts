@@ -16,19 +16,22 @@ export async function GET() {
         const supabase = await createClient();
 
         // Test simple query
-        const { data, error, count } = await supabase
+        const result = await supabase
             .from('questions')
             .select('id', { count: 'exact', head: true });
 
         diagnostics.supabase = {
-            connected: !error,
-            error: error?.message || null,
-            questionCount: count,
+            connected: !result.error,
+            error: result.error ? JSON.stringify(result.error) : null,
+            status: result.status,
+            statusText: result.statusText,
+            questionCount: result.count,
         };
     } catch (e: any) {
         diagnostics.supabase = {
             connected: false,
-            error: e.message,
+            caughtError: e.message,
+            stack: e.stack?.substring(0, 500),
         };
     }
 
