@@ -1,20 +1,21 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Site en construction - Udrive.ma</title>
     <meta name="description" content="Udrive.ma - Site en construction. Bientôt disponible.">
     <meta name="robots" content="noindex, nofollow">
-    
+
     <!-- Preload critical resources -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
+
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -22,37 +23,38 @@
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
         }
-        
+
         .logo-container {
             transition: transform 0.2s ease-in-out;
         }
-        
+
         .logo-container:hover {
             transform: scale(1.02);
         }
-        
+
         .countdown-item {
             transition: all 0.2s ease-in-out;
         }
-        
+
         .countdown-item:hover {
             transform: translateY(-1px);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
         }
-        
+
         .gradient-text {
             background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
-        
+
         .icon-container {
             background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
             box-shadow: 0 8px 32px rgba(59, 130, 246, 0.15);
         }
-        
+
         @media (prefers-reduced-motion: reduce) {
+
             .logo-container,
             .countdown-item {
                 transition: none;
@@ -60,14 +62,17 @@
         }
     </style>
 </head>
+
 <body class="min-h-screen">
     <main class="py-20 lg:py-32">
         <div class="max-w-4xl mx-auto px-6 text-center">
             <!-- Logo et branding -->
             <div class="mb-20">
                 <div class="flex items-center justify-center space-x-5 logo-container">
-                    <div class="flex items-center justify-center w-16 h-16 bg-white rounded-2xl shadow-sm border border-gray-100">
-                        <img src="images/logo.png" alt="Udrive.ma Logo" class="w-11 h-11 object-contain" loading="eager">
+                    <div
+                        class="flex items-center justify-center w-16 h-16 bg-white rounded-2xl shadow-sm border border-gray-100">
+                        <img src="images/logo.png" alt="Udrive.ma Logo" class="w-11 h-11 object-contain"
+                            loading="eager">
                     </div>
                     <div class="text-left">
                         <h2 class="text-3xl lg:text-4xl font-bold gradient-text">
@@ -80,8 +85,10 @@
             <!-- Icône principale -->
             <div class="mb-16">
                 <div class="inline-flex items-center justify-center w-24 h-24 icon-container rounded-full">
-                    <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
                 </div>
             </div>
@@ -92,7 +99,8 @@
             </h1>
 
             <p class="text-xl lg:text-2xl text-gray-600 mb-16 max-w-3xl mx-auto leading-relaxed font-normal">
-                Nous travaillons actuellement sur un projet incroyable pour vous offrir une solution innovante visant à améliorer la mobilité au Maroc.
+                Nous travaillons actuellement sur un projet incroyable pour vous offrir une solution innovante visant à
+                améliorer la mobilité au Maroc.
             </p>
 
             <!-- Compteur -->
@@ -101,25 +109,29 @@
                 <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 max-w-lg mx-auto">
                     <div class="countdown-item">
                         <div class="bg-white rounded-xl shadow-sm border border-gray-100 px-6 py-6">
-                            <div class="text-2xl lg:text-3xl font-bold text-gray-900" id="days" aria-label="Jours restants">00</div>
+                            <div class="text-2xl lg:text-3xl font-bold text-gray-900" id="days"
+                                aria-label="Jours restants">00</div>
                             <div class="text-sm text-gray-500 font-medium mt-1">jours</div>
                         </div>
                     </div>
                     <div class="countdown-item">
                         <div class="bg-white rounded-xl shadow-sm border border-gray-100 px-6 py-6">
-                            <div class="text-2xl lg:text-3xl font-bold text-gray-900" id="hours" aria-label="Heures restantes">00</div>
+                            <div class="text-2xl lg:text-3xl font-bold text-gray-900" id="hours"
+                                aria-label="Heures restantes">00</div>
                             <div class="text-sm text-gray-500 font-medium mt-1">heures</div>
                         </div>
                     </div>
                     <div class="countdown-item">
                         <div class="bg-white rounded-xl shadow-sm border border-gray-100 px-6 py-6">
-                            <div class="text-2xl lg:text-3xl font-bold text-gray-900" id="minutes" aria-label="Minutes restantes">00</div>
+                            <div class="text-2xl lg:text-3xl font-bold text-gray-900" id="minutes"
+                                aria-label="Minutes restantes">00</div>
                             <div class="text-sm text-gray-500 font-medium mt-1">minutes</div>
                         </div>
                     </div>
                     <div class="countdown-item">
                         <div class="bg-white rounded-xl shadow-sm border border-gray-100 px-6 py-6">
-                            <div class="text-2xl lg:text-3xl font-bold text-gray-900" id="seconds" aria-label="Secondes restantes">00</div>
+                            <div class="text-2xl lg:text-3xl font-bold text-gray-900" id="seconds"
+                                aria-label="Secondes restantes">00</div>
                             <div class="text-sm text-gray-500 font-medium mt-1">secondes</div>
                         </div>
                     </div>
@@ -130,7 +142,7 @@
 
     <script>
         // Configuration de la date de lancement
-        const launchDate = new Date('2025-10-10T00:00:00');
+        const launchDate = new Date('2026-05-22T00:00:00');
 
         // Fonction de mise à jour du compteur
         function updateCountdown() {
@@ -162,4 +174,5 @@
         setInterval(updateCountdown, 1000);
     </script>
 </body>
-</html> 
+
+</html>
