@@ -15,6 +15,11 @@ export default function BottomNav() {
             icon: BookOpen,
         },
         {
+            label: "Parcours",
+            href: "/parcours",
+            icon: Trophy,
+        },
+        {
             label: "Tester",
             href: "/tester",
             icon: FileText,
@@ -23,11 +28,6 @@ export default function BottomNav() {
             label: "Entretien",
             href: "/entretien",
             icon: MessageCircle,
-        },
-        {
-            label: "Parcours",
-            href: "/parcours",
-            icon: Trophy,
         },
         {
             label: "Profil",
