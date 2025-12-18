@@ -9,6 +9,7 @@ import ThemeToggle from '@/components/ThemeToggle';
 import { HistoryChart } from '@/components/profile/HistoryChart';
 import { AdminLink } from '@/components/admin/AdminLink';
 import { UserProgress } from '@/components/dashboard/UserProgress';
+import StreakCounter from '@/components/dashboard/StreakCounter';
 
 export const dynamic = 'force-dynamic';
 
@@ -35,6 +36,7 @@ export default async function ProfilPage() {
                     <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Gérez votre progression et vos paramètres.</p>
                 </div>
                 <div className="flex items-center gap-2">
+                    <StreakCounter />
                     <AdminLink isAdmin={user.is_admin || false} />
                     <ThemeToggle />
                     <form action={signout}>

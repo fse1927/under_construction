@@ -148,7 +148,99 @@ export async function markModuleAsLearned(moduleId: string) {
         return { error: 'Failed to save progress' };
     }
 
+    // STREAK LOGIC
+    // Check if user already studied today
+    const { count } = await supabase
+        .from('user_activity_log')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', user.id)
+        .gte('activity_date', new Date().toISOString().split('T')[0]);
+
+    if (!count || count === 0) {
+        // First activity of the day
+        await supabase
+            .from('user_activity_log')
+            .insert({ user_id: user.id, activity_type: 'learning' });
+
+        // Update streak
+        // Simple implementation: fetch last streak update
+        // (For MVP, we can rely on a dedicated streaks table or just count consecutive days in logs,
+        // but let's assume a 'profiles' or 'user_progress_summary' table is best. 
+        // For now, let's just log the activity to enable calculation.)
+    }
+
     return { success: true };
+}
+
+export async function getDailyStreak() {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return 0;
+
+    // Calculate streak from activity logs
+    // efficient recursive CTE is best, but for MVP JS calculation:
+    const { data: logs } = await supabase
+        .from('user_activity_log')
+        .select('activity_date')
+        .eq('user_id', user.id)
+        .order('activity_date', { ascending: false })
+        .limit(30);
+
+    if (!logs || logs.length === 0) return 0;
+
+    let streak = 0;
+    const today = new Date().toISOString().split('T')[0];
+    const uniqueDates = Array.from(new Set(logs.map(l => l.activity_date?.split('T')[0])));
+
+    // Check if studied today
+    if (uniqueDates.includes(today)) {
+        streak = 1;
+    }
+
+    // Check backwards
+    let currentCheck = new Date();
+    if (streak === 1) {
+        // If studied today, check from yesterday backwards
+        currentCheck.setDate(currentCheck.getDate() - 1);
+    }
+    // If not studied today, streak is 0? Or do we allow "active streak" even if not done today yet?
+    // Usually "current streak" implies consecutive days up to now. 
+    // If I studied yesterday but not today, my streak is still alive but pending today.
+
+    // Re-logic:
+    // If last date is today: streak is at least 1 + backwards
+    // If last date is yesterday: streak is backwards (alive)
+    // If last date is older: streak is 0.
+
+    const lastDate = uniqueDates[0]; // most recent because descending sort
+
+    if (!lastDate) return 0;
+
+    const todayDate = new Date();
+    todayDate.setHours(0, 0, 0, 0);
+    const lastActivityDate = new Date(lastDate);
+    lastActivityDate.setHours(0, 0, 0, 0);
+
+    const diffTime = Math.abs(todayDate.getTime() - lastActivityDate.getTime());
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    if (diffDays > 1) return 0; // Streak broken
+
+    // Count consecutive
+    streak = 1;
+    for (let i = 1; i < uniqueDates.length; i++) {
+        const prev = new Date(uniqueDates[i - 1]);
+        const curr = new Date(uniqueDates[i]);
+
+        const diff = (prev.getTime() - curr.getTime()) / (1000 * 3600 * 24);
+        if (Math.round(diff) === 1) {
+            streak++;
+        } else {
+            break;
+        }
+    }
+
+    return streak;
 }
 
 export async function isModuleLearned(moduleId: string) {

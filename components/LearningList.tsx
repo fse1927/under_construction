@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { markModuleAsLearned } from "@/lib/actions/user-progress";
 import { cn } from "@/lib/utils";
+import { triggerConfetti } from "@/lib/confetti";
 
 
 // Extended type for UI
@@ -213,6 +214,8 @@ function LearningCard({ item }: { item: LearningItem }) {
             const result = await markModuleAsLearned(String(item.id));
             if (result.error) {
                 setLearned(learned); // Revert
+            } else if (!learned) {
+                triggerConfetti();
             }
         });
     };
