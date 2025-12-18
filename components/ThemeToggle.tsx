@@ -11,7 +11,8 @@ export default function ThemeToggle() {
         // Init from local storage or system pref
         const stored = localStorage.getItem("theme");
         if (stored === "dark") {
-            setIsDark(true);
+            // eslint-disable-next-line
+            if (!isDark) setIsDark(true);
             document.documentElement.classList.add("dark");
         } else if (!stored && window.matchMedia("(prefers-color-scheme: dark)").matches) {
             // Optional: Auto detect system

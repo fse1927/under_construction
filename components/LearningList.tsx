@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { markModuleAsLearned } from "@/lib/actions/user-progress";
 import { cn } from "@/lib/utils";
 
+
 // Extended type for UI
 export type LearningItem = ContenuApprentissage & { isLearned?: boolean };
 
@@ -87,7 +88,7 @@ export default function LearningList({ items, currentPage, totalPages }: Learnin
                             // Debounce could be added here
                             handleSearch(e.target.value);
                         }}
-                        className="pl-10 h-12 text-lg shadow-sm border-gray-200 focus:border-primary focus:ring-primary rounded-xl"
+                        className="pl-10 h-12 text-base md:text-lg shadow-sm border-gray-200 focus:border-primary focus:ring-primary rounded-xl"
                     />
                 </div>
 
@@ -105,7 +106,7 @@ export default function LearningList({ items, currentPage, totalPages }: Learnin
                             variant={currentChapter === chapter.id ? "secondary" : "outline"}
                             onClick={() => handleChapterChange(chapter.id)}
                             className={cn(
-                                "rounded-full gap-2 transition-all",
+                                "rounded-full gap-2 transition-all h-10 px-4 text-sm",
                                 currentChapter === chapter.id && "bg-gray-900 text-white hover:bg-gray-800"
                             )}
                         >
@@ -267,6 +268,8 @@ function LearningCard({ item }: { item: LearningItem }) {
                         <BookOpen className="w-3 h-3 ml-1" />
                     </a>
                 </Button>
+
+
             </div>
         </div>
     );

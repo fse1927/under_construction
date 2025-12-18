@@ -16,7 +16,7 @@ export default async function AdminDashboardPage() {
                     Tour de Contrôle
                 </h1>
                 <p className="text-gray-500 dark:text-gray-400 font-medium">
-                    Aperçu global de l'activité.
+                    Aperçu global de l&apos;activité.
                 </p>
             </div>
 

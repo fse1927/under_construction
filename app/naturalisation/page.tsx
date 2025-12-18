@@ -5,7 +5,7 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Accueil | Réussite France Citoyen",
-  description: "L'application n°1 pour préparer et réussir votre entretien de naturalisation française. Quiz, cours et simulations gratuits.",
+  description: "L&apos;application n°1 pour préparer et réussir votre entretien de naturalisation française. Quiz, cours et simulations gratuits.",
 };
 
 export default function Home() {
@@ -25,7 +25,7 @@ export default function Home() {
           </h1>
 
           <p className="text-xl text-gray-600 mb-10 max-w-2xl mx-auto leading-relaxed animate-in slide-in-from-bottom-4 fade-in duration-700 delay-200">
-            L'application complète pour maîtriser l'entretien, apprendre l'histoire et tester vos connaissances.
+            L&apos;application complète pour maîtriser l&apos;entretien, apprendre l&apos;histoire et tester vos connaissances.
             <span className="font-semibold text-gray-900"> 100% gratuit et interactif.</span>
           </p>
 
@@ -58,7 +58,7 @@ export default function Home() {
             </div>
             <h3 className="text-xl font-bold text-gray-900 mb-3">Apprentissage Guidé</h3>
             <p className="text-gray-500 leading-relaxed">
-              Des fiches de révision structurées sur l'histoire, la géographie et les valeurs de la République.
+              Des fiches de révision structurées sur l&apos;histoire, la géographie et les valeurs de la République.
             </p>
           </div>
 
@@ -76,7 +76,7 @@ export default function Home() {
             <div className="w-12 h-12 bg-green-100 rounded-2xl flex items-center justify-center mb-6">
               <Star className="w-6 h-6 text-green-700" />
             </div>
-            <h3 className="text-xl font-bold text-gray-900 mb-3">Simulateur d'Entretien</h3>
+            <h3 className="text-xl font-bold text-gray-900 mb-3">Simulateur d&apos;Entretien</h3>
             <p className="text-gray-500 leading-relaxed">
               Entraînez-vous avec les questions fréquentes posées par les agents de préfecture.
             </p>

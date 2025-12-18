@@ -149,7 +149,7 @@ export default async function ProfilPage() {
                                             />
                                         </div>
                                         <div className="space-y-1.5">
-                                            <label className="text-xs font-medium text-gray-500 dark:text-gray-400">Nationalité d'origine</label>
+                                            <label className="text-xs font-medium text-gray-500 dark:text-gray-400">Nationalité d&apos;origine</label>
                                             <input
                                                 name="nationalite_origine"
                                                 defaultValue={user.nationalite_origine || ''}

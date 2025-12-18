@@ -39,7 +39,7 @@ export default function InterviewSimulator({ userSituation = 'salarié', questio
                 </p>
                 <Button onClick={resetInterview} size="lg" className="rounded-xl">
                     <RefreshCw className="mr-2 h-4 w-4" />
-                    Recommencer l'entraînement
+                    Recommencer l&apos;entraînement
                 </Button>
             </div>
         );
@@ -94,7 +94,7 @@ export default function InterviewSimulator({ userSituation = 'salarié', questio
                     <div className="space-y-4 max-w-2xl mx-auto w-full animate-in fade-in">
                         <textarea
                             className="w-full min-h-[120px] p-4 rounded-xl border border-gray-200 focus:border-primary focus:ring-1 focus:ring-primary resize-y text-base"
-                            placeholder="Écrivez votre réponse ici ou répondez à l'oral..."
+                            placeholder="Écrivez votre réponse ici ou répondez à l&apos;oral..."
                             value={userResponse}
                             onChange={(e) => setUserResponse(e.target.value)}
                         />
@@ -142,7 +142,7 @@ export default function InterviewSimulator({ userSituation = 'salarié', questio
                             onClick={toggleAnswer}
                         >
                             <Eye className="mr-2 h-4 w-4" />
-                            Voir l'aide directement
+                            Voir l&apos;aide directement
                         </Button>
                     )}
 

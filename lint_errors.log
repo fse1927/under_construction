@@ -1,0 +1,165 @@
+﻿
+> france-citoyen@1.0.0 lint
+> eslint
+
+
+C:\Users\SalahEddine\Desktop\Projects\IA\under_construction\app\admin\content\page.tsx
+  45:110  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+C:\Users\SalahEddine\Desktop\Projects\IA\under_construction\app\admin\page.tsx
+  19:39  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+C:\Users\SalahEddine\Desktop\Projects\IA\under_construction\app\naturalisation\page.tsx
+  28:14  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  28:52  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  28:75  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  61:55  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  79:78  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+C:\Users\SalahEddine\Desktop\Projects\IA\under_construction\app\parcours\page.tsx
+  56:31  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+C:\Users\SalahEddine\Desktop\Projects\IA\under_construction\app\profil\page.tsx
+  152:130  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+C:\Users\SalahEddine\Desktop\Projects\IA\under_construction\components\InterviewSimulator.tsx
+   42:34  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  145:35  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+C:\Users\SalahEddine\Desktop\Projects\IA\under_construction\components\ThemeToggle.tsx
+  14:13  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\SalahEddine\Desktop\Projects\IA\under_construction\components\ThemeToggle.tsx:14:13
+  12 |         const stored = localStorage.getItem("theme");
+  13 |         if (stored === "dark") {
+> 14 |             setIsDark(true);
+     |             ^^^^^^^^^ Avoid calling setState() directly within an effect
+  15 |             document.documentElement.classList.add("dark");
+  16 |         } else if (!stored && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+  17 |             // Optional: Auto detect system  react-hooks/set-state-in-effect
+
+C:\Users\SalahEddine\Desktop\Projects\IA\under_construction\components\admin\AdminSidebar.tsx
+   34:9   error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\SalahEddine\Desktop\Projects\IA\under_construction\components\admin\AdminSidebar.tsx:34:9
+  32 |     // Close mobile menu on route change
+  33 |     useEffect(() => {
+> 34 |         setIsOpen(false);
+     |         ^^^^^^^^^ Avoid calling setState() directly within an effect
+  35 |     }, [pathname]);
+  36 |
+  37 |     const SidebarContent = () => (                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             react-hooks/set-state-in-effect
+  107:18  error  Error: Cannot create components during render
+
+Components created during render will reset their state each time they are created. Declare components outside of render.
+
+C:\Users\SalahEddine\Desktop\Projects\IA\under_construction\components\admin\AdminSidebar.tsx:107:18
+  105 |             {/* Desktop Sidebar */}
+  106 |             <aside className="hidden lg:block fixed inset-y-0 left-0 w-64 h-full z-40">
+> 107 |                 <SidebarContent />
+      |                  ^^^^^^^^^^^^^^ This component is created during render
+  108 |             </aside>
+  109 |
+  110 |             {/* Mobile Drawer (Custom using Framer Motion) */}
+
+C:\Users\SalahEddine\Desktop\Projects\IA\under_construction\components\admin\AdminSidebar.tsx:37:28
+  35 |     }, [pathname]);
+  36 |
+> 37 |     const SidebarContent = () => (
+     |                            ^^^^^^^
+> 38 |         <div className="flex flex-col h-full bg-white dark:bg-slate-950 border-r border-gray-200 dark:border-slate-800">
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 39 |             <div className="p-6 border-b border-gray-200 dark:border-slate-800">
+     ÔÇª
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 88 |         </div>
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 89 |     );
+     | ^^^^^^ The component is created during render here
+  90 |
+  91 |     return (
+  92 |         <>  react-hooks/static-components
+  136:30  error  Error: Cannot create components during render
+
+Components created during render will reset their state each time they are created. Declare components outside of render.
+
+C:\Users\SalahEddine\Desktop\Projects\IA\under_construction\components\admin\AdminSidebar.tsx:136:30
+  134 |                                 </Button>
+  135 |                             </div>
+> 136 |                             <SidebarContent />
+      |                              ^^^^^^^^^^^^^^ This component is created during render
+  137 |                         </motion.div>
+  138 |                     </>
+  139 |                 )}
+
+C:\Users\SalahEddine\Desktop\Projects\IA\under_construction\components\admin\AdminSidebar.tsx:37:28
+  35 |     }, [pathname]);
+  36 |
+> 37 |     const SidebarContent = () => (
+     |                            ^^^^^^^
+> 38 |         <div className="flex flex-col h-full bg-white dark:bg-slate-950 border-r border-gray-200 dark:border-slate-800">
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 39 |             <div className="p-6 border-b border-gray-200 dark:border-slate-800">
+     ÔÇª
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 88 |         </div>
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 89 |     );
+     | ^^^^^^ The component is created during render here
+  90 |
+  91 |     return (
+  92 |         <>                            react-hooks/static-components
+
+C:\Users\SalahEddine\Desktop\Projects\IA\under_construction\components\admin\dashboard\RecentActivityFeed.tsx
+  66:36  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+C:\Users\SalahEddine\Desktop\Projects\IA\under_construction\components\admin\users\UserTable.tsx
+  102:68  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+C:\Users\SalahEddine\Desktop\Projects\IA\under_construction\components\quiz\ExamMode.tsx
+   32:21  error  Error: Cannot access variable before it is declared
+
+`handleSubmit` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+C:\Users\SalahEddine\Desktop\Projects\IA\under_construction\components\quiz\ExamMode.tsx:32:21
+  30 |                 if (prev <= 1) {
+  31 |                     clearInterval(timer)
+> 32 |                     handleSubmit() // Auto-submit
+     |                     ^^^^^^^^^^^^ `handleSubmit` accessed before it is declared
+  33 |                     return 0
+  34 |                 }
+  35 |                 return prev - 1
+
+C:\Users\SalahEddine\Desktop\Projects\IA\under_construction\components\quiz\ExamMode.tsx:49:5
+  47 |     }
+  48 |
+> 49 |     const handleSubmit = useCallback(async () => {
+     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 50 |         if (isSubmitting) return
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 51 |         setIsSubmitting(true)
+     ÔÇª
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 74 |         }
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 75 |     }, [answers, isSubmitting])
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `handleSubmit` is declared here
+  76 |
+  77 |     // Format Time 00:00
+  78 |     const formatTime = (seconds: number) => {  react-hooks/immutability
+  236:45  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      react/no-unescaped-entities
+
+Ô£û 19 problems (19 errors, 0 warnings)
+

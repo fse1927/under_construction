@@ -32,8 +32,8 @@ export function RecentActivityFeed({ items }: RecentActivityFeedProps) {
                         items.map((item) => (
                             <div key={item.id} className="flex items-start gap-4">
                                 <div className={`mt-1 p-2 rounded-full flex-shrink-0 ${item.type === 'user'
-                                        ? 'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400'
-                                        : 'bg-orange-100 text-orange-600 dark:bg-orange-900/30 dark:text-orange-400'
+                                    ? 'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400'
+                                    : 'bg-orange-100 text-orange-600 dark:bg-orange-900/30 dark:text-orange-400'
                                     }`}>
                                     {item.type === 'user' ? <User className="h-4 w-4" /> : <MessageCircle className="h-4 w-4" />}
                                 </div>
@@ -63,7 +63,7 @@ export function RecentActivityFeed({ items }: RecentActivityFeedProps) {
 
                 <div className="mt-6 pt-4 border-t border-gray-100 dark:border-gray-800">
                     <Link href="/admin/users" className="text-sm text-primary hover:text-blue-600 font-medium flex items-center justify-center">
-                        Voir tout l'historique
+                        Voir tout l&apos;historique
                     </Link>
                 </div>
             </CardContent>

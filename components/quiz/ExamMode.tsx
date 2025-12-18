@@ -21,31 +21,6 @@ export function ExamMode({ questions }: ExamModeProps) {
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [result, setResult] = useState<any>(null)
 
-    // Timer Logic
-    useEffect(() => {
-        if (result) return // Stop timer if finished
-
-        const timer = setInterval(() => {
-            setTimeLeft((prev) => {
-                if (prev <= 1) {
-                    clearInterval(timer)
-                    handleSubmit() // Auto-submit
-                    return 0
-                }
-                return prev - 1
-            })
-        }, 1000)
-
-        return () => clearInterval(timer)
-    }, [result])
-
-    const handleOptionSelect = (option: string) => {
-        setAnswers(prev => ({
-            ...prev,
-            [questions[currentIndex].id]: option
-        }))
-    }
-
     const handleSubmit = useCallback(async () => {
         if (isSubmitting) return
         setIsSubmitting(true)
@@ -73,6 +48,31 @@ export function ExamMode({ questions }: ExamModeProps) {
             setIsSubmitting(false)
         }
     }, [answers, isSubmitting])
+
+    // Timer Logic
+    useEffect(() => {
+        if (result) return // Stop timer if finished
+
+        const timer = setInterval(() => {
+            setTimeLeft((prev) => {
+                if (prev <= 1) {
+                    clearInterval(timer)
+                    handleSubmit() // Auto-submit
+                    return 0
+                }
+                return prev - 1
+            })
+        }, 1000)
+
+        return () => clearInterval(timer)
+    }, [result])
+
+    const handleOptionSelect = (option: string) => {
+        setAnswers(prev => ({
+            ...prev,
+            [questions[currentIndex].id]: option
+        }))
+    }
 
     // Format Time 00:00
     const formatTime = (seconds: number) => {
@@ -233,7 +233,7 @@ export function ExamMode({ questions }: ExamModeProps) {
             {isLastQuestion && Object.keys(answers).length < questions.length && (
                 <div className="mt-4 flex items-center justify-center gap-2 text-orange-500 text-sm bg-orange-50 p-2 rounded-lg border border-orange-100 max-w-md mx-auto">
                     <AlertTriangle className="w-4 h-4" />
-                    <span>Attention : Vous n'avez pas répondu à toutes les questions.</span>
+                    <span>Attention : Vous n&apos;avez pas répondu à toutes les questions.</span>
                 </div>
             )}
         </div>

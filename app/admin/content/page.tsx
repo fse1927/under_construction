@@ -42,7 +42,7 @@ export default async function ContentPage({
         <div className="space-y-6 animate-in fade-in duration-500">
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Contenu d'Apprentissage</h1>
+                    <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Contenu d&apos;Apprentissage</h1>
                     <p className="text-gray-500 dark:text-gray-400">Gérez les fiches et modules du Livret du Citoyen.</p>
                 </div>
                 <Link href="/admin/content/new">

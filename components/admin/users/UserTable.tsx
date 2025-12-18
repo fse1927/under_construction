@@ -99,7 +99,7 @@ export function UserTable({ users, currentPage, totalPages, searchQuery }: UserT
                             <TableHead className="px-4 py-3">Email</TableHead>
                             <TableHead className="px-4 py-3">Situation</TableHead>
                             <TableHead className="px-4 py-3">Rôle</TableHead>
-                            <TableHead className="px-4 py-3">Date d'inscription</TableHead>
+                            <TableHead className="px-4 py-3">Date d&apos;inscription</TableHead>
                             <TableHead className="px-4 py-3 text-right">Actions</TableHead>
                         </TableRow>
                     </TableHeader>
