@@ -1,65 +1,34 @@
-
-export interface CSVQuestion {
-    theme: string;
-    type: 'quiz' | 'interview';
-    question: string;
-    answer: string;
-    option_1?: string;
-    option_2?: string;
-    option_3?: string;
-    tips?: string;
-    difficulty?: string;
+export interface CSVRow {
+    [key: string]: string;
 }
 
-export function parseCSV(content: string): CSVQuestion[] {
-    const lines = content.trim().split('\n');
-    const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
+export function parseCSV(content: string): CSVRow[] {
+    const lines = content.split(/\r?\n/).filter(line => line.trim() !== '');
+    if (lines.length < 2) return [];
 
-    // Minimal validation of headers
-    // Minimal validation of headers
-    // const required = ['question', 'answer', 'theme'];
-    // Check if required headers exist
-    // For simplicity, just proceeding
+    // Detect separator (semicolon or comma)
+    const headerLine = lines[0];
+    const separator = headerLine.includes(';') ? ';' : ',';
 
-    const results: CSVQuestion[] = [];
+    const headers = headerLine.split(separator).map(h => h.trim().toLowerCase().replace(/^"|"$/g, ''));
+
+    const result: CSVRow[] = [];
 
     for (let i = 1; i < lines.length; i++) {
         const line = lines[i];
-        if (!line.trim()) continue;
+        // Handle quotes if necessary? Simple split for now, robust CSV parsing is complex.
+        // For this MVP, we assume no separators inside values or simple split.
+        // Better regex for splitting with ease:
+        const values = line.split(separator).map(v => v.trim().replace(/^"|"$/g, ''));
 
-        // Handle quotes/commas properly? 
-        // For robustness, regex splitting or library is better. 
-        // Simple implementation: split by comma (flawed if content has commas).
-        // Let's use a simple regex for CSV parsing
-        // Regex parsing removed as unused
-
-
-        const values = line.split(',');//.map(v => v.trim()); // Very Basic!
-
-        // Map based on index of headers
-        // Just assuming order for now if headers match standard?
-        // Or Map headers to index
-
-        const row: any = {};
-        headers.forEach((h, index) => {
-            row[h] = values[index]?.replace(/^"|"$/g, '').trim();
-            // Basic quote removal
-        });
-
-        if (row.question && row.answer) {
-            results.push({
-                theme: row.theme || 'Histoire',
-                type: (row.type === 'interview' ? 'interview' : 'quiz'),
-                question: row.question,
-                answer: row.answer,
-                option_1: row.option1 || row.option_1,
-                option_2: row.option2 || row.option_2,
-                option_3: row.option3 || row.option_3,
-                tips: row.tips,
-                difficulty: row.difficulty
+        if (values.length === headers.length) {
+            const row: CSVRow = {};
+            headers.forEach((header, index) => {
+                row[header] = values[index];
             });
+            result.push(row);
         }
     }
 
-    return results;
+    return result;
 }

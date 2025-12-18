@@ -1,72 +1,64 @@
-'use server';
+'use server'
 
 import { createClient } from '@/lib/supabase/server';
+import { Question } from '@/lib/data/types';
 import { revalidatePath } from 'next/cache';
-import { redirect } from 'next/navigation';
 
-export async function upsertQuestion(formData: FormData) {
+export async function importQuestions(data: any[]) {
     const supabase = await createClient();
 
-    // Check auth/admin
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) throw new Error('Unauthorized');
+    // Map CSV columns to DB columns
+    // CSV headers expected: question, answer, theme, difficulty, options (pipe separated?)
 
-    // We trust middleware but good to double check or rely on RLS
-    // RLS "Admin write access" will block if not admin.
+    const questionsToInsert = data.map(row => {
+        // Parse options if string "A|B|C" or similar
+        let options: string[] = [];
+        if (row.options) {
+            options = row.options.split('|').map((o: string) => o.trim());
+        } else if (row.option1 && row.option2) {
+            // Handle case where options are separate columns
+            options = [row.option1, row.option2, row.option3, row.option4].filter(Boolean);
+        }
 
-    const id = formData.get('id') as string | null;
-    const question = formData.get('question') as string;
-    const answer = formData.get('reponse_correcte') as string;
-    const theme = formData.get('theme') as string;
-    const type = formData.get('type') as string;
+        return {
+            question: row.question,
+            answer: row.answer,
+            theme: row.theme || 'Divers',
+            difficulty: row.difficulty || 'moyen',
+            options: options.length > 0 ? options : [row.answer, 'Autre'], // Fallback
+            explanation: row.explanation || '',
+            type: 'quiz', // Default
+            source: 'import-csv'
+        };
+    });
 
-    // Handle options (dynamic inputs in form, gathered here)
-    const option1 = formData.get('option_1') as string;
-    const option2 = formData.get('option_2') as string;
-    const option3 = formData.get('option_3') as string;
-    const options = [option1, option2, option3].filter(Boolean);
+    const { error } = await supabase.from('questions').insert(questionsToInsert);
 
-    // Metadata
-    const difficulty = formData.get('difficulty') as string || 'moyen'; // Default to moyen
+    if (error) {
+        console.error('Import error:', error);
+        throw new Error('Failed to import questions');
+    }
 
-    // Metadata
-    const tips = formData.get('tips') as string;
-    const metadata = {
-        tips,
-        // difficulty // We can keep it here for legacy or remove. Let's keep it in column primarily.
-    };
+    revalidatePath('/admin/questions');
+    return { success: true, count: questionsToInsert.length };
+}
 
-    const payload: any = {
-        question,
-        answer,
-        theme,
-        type,
-        options: type === 'quiz' ? options : [],
-        difficulty, // Add to root
-        metadata,
-        updated_at: new Date().toISOString()
-    };
+export async function upsertQuestion(question: Partial<Question>) {
+    const supabase = await createClient();
+
+    const payload: any = { ...question };
+    delete payload.created_at; // distinct from editable fields
 
     let error;
-
-    if (id) {
+    if (question.id) {
         // Update
         const { error: updateError } = await supabase
             .from('questions')
             .update(payload)
-            .eq('id', id);
+            .eq('id', question.id);
         error = updateError;
     } else {
         // Insert
-        // ID is text? Migration said "id TEXT PRIMARY KEY". 
-        // If I insert without ID, it fails if no default gen_random_uuid() or if it expects text ID.
-        // Migration Step 64: "id TEXT PRIMARY KEY".
-        // It does NOT have a default generator. 
-        // I must generate an ID.
-        // Use crypto.randomUUID()
-        const newId = crypto.randomUUID();
-        payload.id = newId;
-
         const { error: insertError } = await supabase
             .from('questions')
             .insert(payload);
@@ -74,48 +66,26 @@ export async function upsertQuestion(formData: FormData) {
     }
 
     if (error) {
-        console.error('Error saving question:', error);
-        throw new Error('Failed to save question');
+        console.error('Upsert error:', error);
+        return { error: 'Failed to save question' };
     }
 
     revalidatePath('/admin/questions');
+    return { success: true };
 }
 
 export async function deleteQuestion(id: string) {
     const supabase = await createClient();
-    const { error } = await supabase.from('questions').delete().eq('id', id);
-    if (error) throw error;
-    revalidatePath('/admin/questions');
-}
 
-export async function importQuestions(questions: any[]) {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) throw new Error('Unauthorized');
-
-    const rows = questions.map(q => {
-        const options = [q.option_1, q.option_2, q.option_3].filter(Boolean);
-        return {
-            id: crypto.randomUUID(),
-            question: q.question,
-            answer: q.answer,
-            theme: q.theme,
-            type: q.type,
-            options: q.type === 'quiz' ? options : [],
-            metadata: {
-                tips: q.tips,
-                difficulty: q.difficulty
-            },
-            updated_at: new Date().toISOString()
-        };
-    });
-
-    const { error } = await supabase.from('questions').insert(rows);
+    const { error } = await supabase
+        .from('questions')
+        .delete()
+        .eq('id', id);
 
     if (error) {
-        console.error('Import error:', error);
-        throw new Error('Import failed');
+        return { error: 'Failed to delete' };
     }
 
     revalidatePath('/admin/questions');
+    return { success: true };
 }

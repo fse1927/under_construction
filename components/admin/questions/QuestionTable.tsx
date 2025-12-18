@@ -19,6 +19,7 @@ import {
     Plus
 } from 'lucide-react';
 import { Question } from '@/lib/data/types';
+import { deleteQuestion } from '@/app/admin/questions/actions';
 import { QuestionSheet } from './QuestionSheet';
 
 interface QuestionTableProps {
@@ -87,6 +88,22 @@ export function QuestionTable({
     const handleAddNew = () => {
         setSelectedQuestion(null);
         setIsSheetOpen(true);
+    };
+
+    const handleDelete = async (id: string) => {
+        if (!confirm('Êtes-vous sûr de vouloir supprimer cette question ?')) return;
+
+        try {
+            const res = await deleteQuestion(id);
+            if (res.error) {
+                alert('Erreur lors de la suppression');
+            } else {
+                router.refresh();
+            }
+        } catch (error) {
+            console.error(error);
+            alert('Erreur inattendue');
+        }
     };
 
     return (
@@ -216,7 +233,12 @@ export function QuestionTable({
                                             <Button variant="ghost" size="icon" className="h-8 w-8 text-gray-500 hover:text-blue-600" onClick={() => handleEdit(q)}>
                                                 <Edit className="w-4 h-4" />
                                             </Button>
-                                            <Button variant="ghost" size="icon" className="h-8 w-8 text-gray-500 hover:text-red-600">
+                                            <Button
+                                                variant="ghost"
+                                                size="icon"
+                                                className="h-8 w-8 text-gray-500 hover:text-red-600"
+                                                onClick={() => handleDelete(q.id)}
+                                            >
                                                 <Trash className="w-4 h-4" />
                                             </Button>
                                         </div>
