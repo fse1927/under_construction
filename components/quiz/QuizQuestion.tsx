@@ -1,9 +1,12 @@
-import { Timer, CheckCircle, XCircle } from 'lucide-react';
+import { Timer, CheckCircle, XCircle, BookOpen, Heart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Question } from '@/lib/data/types';
 import { QuizMode } from './types';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import confetti from 'canvas-confetti';
+import { motion, AnimatePresence } from 'framer-motion';
+import { addXp, toggleFavorite } from '@/lib/actions/gamification';
+import { updateFlashcard } from '@/lib/actions/srs';
 
 interface QuizQuestionProps {
     question: Question;
@@ -17,6 +20,7 @@ interface QuizQuestionProps {
     onSelectAnswer: (answer: string) => void;
     onValidateOrNext: () => void;
     onExit: () => void;
+    initialIsFavorite?: boolean;
 }
 
 export function QuizQuestion({
@@ -30,18 +34,48 @@ export function QuizQuestion({
     timeRemaining,
     onSelectAnswer,
     onValidateOrNext,
-    onExit
+    onExit,
+    initialIsFavorite = false
 }: QuizQuestionProps) {
+    const [isFavorite, setIsFavorite] = useState(initialIsFavorite);
+    const [xpGained, setXpGained] = useState<number | null>(null);
 
+    // Effect for XP and SRS logic
+    // We rely on the parent providing a 'key' prop to reset state between questions.
     useEffect(() => {
-        if (isAnswerChecked && selectedAnswer === question.answer && mode === 'training') {
-            confetti({
-                particleCount: 100,
-                spread: 70,
-                origin: { y: 0.6 }
-            });
-        }
-    }, [isAnswerChecked, selectedAnswer, question.answer, mode]);
+        const handleValidation = async () => {
+            if (isAnswerChecked && mode === 'training') {
+                const isCorrect = selectedAnswer === question.answer;
+
+                // 1. Update SRS (Fire and forget)
+                updateFlashcard(String(question.id), isCorrect);
+
+                // 2. Add XP if correct
+                if (isCorrect) {
+                    confetti({
+                        particleCount: 100,
+                        spread: 70,
+                        origin: { y: 0.6 }
+                    });
+
+                    // Only grant XP once per question instance
+                    if (xpGained === null) {
+                        const amount = 10;
+                        await addXp(amount);
+                        setXpGained(amount);
+                    }
+                }
+            }
+        };
+
+        handleValidation();
+    }, [isAnswerChecked, selectedAnswer, question.answer, mode, question.id, xpGained]);
+
+    const handleToggleFavorite = async () => {
+        const newState = !isFavorite;
+        setIsFavorite(newState);
+        await toggleFavorite(String(question.id));
+    };
 
     const formatTime = (seconds: number) => {
         const m = Math.floor(seconds / 60);
@@ -57,27 +91,45 @@ export function QuizQuestion({
                     <span className="font-bold text-gray-900">Question {currentIndex + 1}</span>
                     <span>/ {totalQuestions}</span>
                 </div>
-                {mode === 'exam' && (
-                    <div className={`flex items-center gap-2 font-mono font-bold ${timeRemaining < 60 ? 'text-red-600 animate-pulse' : 'text-primary'}`}>
-                        <Timer className="w-5 h-5" />
-                        {formatTime(timeRemaining)}
-                    </div>
-                )}
-                {mode === 'training' && (
-                    <div className="flex gap-2">
-                        <span className="text-xs uppercase bg-blue-100 text-blue-700 px-2 py-1 rounded font-bold">
-                            {question.theme}
-                        </span>
-                        {(question as any).difficulty && (
-                            <span className={`text-xs uppercase px-2 py-1 rounded font-bold
-                                ${(question as any).difficulty === 'facile' ? 'bg-green-100 text-green-700' :
-                                    (question as any).difficulty === 'moyen' ? 'bg-yellow-100 text-yellow-700' :
-                                        'bg-red-100 text-red-700'}`}>
-                                {(question as any).difficulty}
+
+                {/* Center: XP feedback */}
+                <AnimatePresence>
+                    {xpGained && (
+                        <motion.div
+                            initial={{ scale: 0, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0, opacity: 0 }}
+                            className="bg-yellow-400 text-yellow-900 text-xs font-black px-2 py-1 rounded-full shadow-lg"
+                        >
+                            +{xpGained} XP
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+
+                <div className="flex items-center gap-3">
+                    {mode === 'exam' && (
+                        <div className={`flex items-center gap-2 font-mono font-bold ${timeRemaining < 60 ? 'text-red-600 animate-pulse' : 'text-primary'}`}>
+                            <Timer className="w-5 h-5" />
+                            {formatTime(timeRemaining)}
+                        </div>
+                    )}
+                    {mode === 'training' && (
+                        <div className="flex gap-2">
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                className={`h-8 w-8 hover:bg-transparent ${isFavorite ? 'text-red-500' : 'text-gray-300 hover:text-red-400'}`}
+                                onClick={handleToggleFavorite}
+                            >
+                                <Heart className={`w-5 h-5 ${isFavorite ? 'fill-current' : ''}`} />
+                            </Button>
+
+                            <span className="text-xs uppercase bg-blue-100 text-blue-700 px-2 py-1 rounded font-bold flex items-center">
+                                {question.theme}
                             </span>
-                        )}
-                    </div>
-                )}
+                        </div>
+                    )}
+                </div>
             </div>
 
             {/* ProgressBar */}
@@ -132,10 +184,36 @@ export function QuizQuestion({
                         })
                     ) : (
                         <div className="p-4 bg-gray-50 rounded-xl border border-gray-100">
-                            <p className="italic text-gray-500 text-center">Question ouverte (Pas d'options).</p>
+                            <p className="italic text-gray-500 text-center">Question ouverte (Pas d&apos;options).</p>
                         </div>
                     )}
                 </div>
+
+                {/* Explanation Section */}
+                <AnimatePresence>
+                    {isAnswerChecked && mode === 'training' && question.explanation && (
+                        <motion.div
+                            initial={{ opacity: 0, y: 10, height: 0 }}
+                            animate={{ opacity: 1, y: 0, height: 'auto' }}
+                            exit={{ opacity: 0, height: 0 }}
+                            className="overflow-hidden"
+                        >
+                            <div className="mt-4 p-5 bg-blue-50/80 border border-blue-100 rounded-xl shadow-sm">
+                                <div className="flex items-start gap-4">
+                                    <div className="p-2 bg-white rounded-lg shadow-sm shrink-0">
+                                        <BookOpen className="w-5 h-5 text-blue-600" />
+                                    </div>
+                                    <div className="space-y-1">
+                                        <h4 className="font-bold text-blue-900 text-base">Le Saviez-vous ?</h4>
+                                        <p className="text-blue-800 leading-relaxed text-sm md:text-base">
+                                            {question.explanation}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
 
                 <div className="pt-4 flex justify-between items-center mt-auto">
                     <Button variant="ghost" size="sm" onClick={onExit} className="text-gray-400 hover:text-red-500">

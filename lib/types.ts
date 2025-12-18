@@ -24,6 +24,11 @@ export type UserProfile = {
     nationalite_origine?: string | null;
     date_arrivee_france?: string | null;
     niveau_francais?: string | null;
+    // Gamification
+    xp: number;
+    level: number;
+    current_streak: number;
+    last_activity_date: string;
 };
 
 export type UserStats = {

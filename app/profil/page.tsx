@@ -8,6 +8,7 @@ import { redirect } from 'next/navigation';
 import ThemeToggle from '@/components/ThemeToggle';
 import { HistoryChart } from '@/components/profile/HistoryChart';
 import { AdminLink } from '@/components/admin/AdminLink';
+import { UserProgress } from '@/components/dashboard/UserProgress';
 
 export const dynamic = 'force-dynamic';
 
@@ -29,7 +30,6 @@ export default async function ProfilPage() {
     return (
         <div className="min-h-[calc(100vh-80px)] bg-gray-50/50 dark:bg-gray-950 p-4 pb-32 max-w-2xl mx-auto space-y-8">
             <header className="flex items-center justify-between sticky top-0 z-30 bg-gray-50/80 dark:bg-gray-950/80 backdrop-blur-md py-4 -mx-4 px-4 border-b border-gray-200/50 dark:border-gray-800/50 transition-all">
-                {/* ... existing header content ... */}
                 <div>
                     <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">Mon Profil</h1>
                     <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Gérez votre progression et vos paramètres.</p>
@@ -46,10 +46,14 @@ export default async function ProfilPage() {
                 </div>
             </header>
 
+            {/* User Progress Section */}
+            <div className="animate-in fade-in slide-in-from-bottom-5 duration-700 delay-50">
+                <UserProgress user={user} />
+            </div>
+
             {/* User Info Card */}
             <div className="animate-in fade-in slide-in-from-bottom-5 duration-700 delay-100">
                 <Card className="dark:bg-slate-900 dark:border-slate-800 border-none shadow-md overflow-hidden relative">
-                    {/* ... existing card content ... */}
                     <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-primary to-blue-400"></div>
                     <CardHeader className="flex flex-row items-center gap-5 pb-4">
                         <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-2xl dark:from-blue-900/20 dark:to-blue-800/20 shadow-inner">

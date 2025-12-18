@@ -15,8 +15,8 @@ export default function BottomNav() {
             icon: BookOpen,
         },
         {
-            label: "Parcours",
-            href: "/parcours",
+            label: "Classement",
+            href: "/classement",
             icon: Trophy,
         },
         {

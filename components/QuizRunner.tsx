@@ -42,6 +42,7 @@ export default function QuizRunner({ mode, onExit }: QuizRunnerProps) {
 
     return (
         <QuizQuestion
+            key={currentQuestion.id}
             question={currentQuestion}
             currentIndex={state.currentIndex}
             totalQuestions={state.questions.length}

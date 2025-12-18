@@ -6,7 +6,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { BookOpen, HelpCircle, Timer } from 'lucide-react';
 
 
+import { useRouter } from 'next/navigation';
+
 export default function TesterPage() {
+    const router = useRouter();
     const [mode, setMode] = useState<'training' | 'exam' | null>(null);
 
     const handleExit = () => setMode(null);
@@ -54,15 +57,15 @@ export default function TesterPage() {
                 <div>
                     <Card
                         className="cursor-pointer hover:border-red-500 hover:shadow-md transition-all group"
-                        onClick={() => setMode('exam')}
+                        onClick={() => router.push('/examen')}
                     >
                         <CardHeader className="flex flex-row items-center gap-4 py-4">
                             <div className="bg-red-50 p-3 rounded-full group-hover:bg-red-100 transition-colors">
                                 <Timer className="w-8 h-8 text-red-600" />
                             </div>
                             <div>
-                                <CardTitle>Examen Blanc</CardTitle>
-                                <CardDescription>40 questions • 20 minutes</CardDescription>
+                                <CardTitle>Examen Blanc (Nouveau)</CardTitle>
+                                <CardDescription>50 questions • 30 minutes</CardDescription>
                             </div>
                         </CardHeader>
                         <CardContent>

@@ -4,6 +4,7 @@ import { getUserProgressList } from '@/lib/actions/user-progress';
 import LearningList, { LearningItem } from '@/components/LearningList';
 import { Question } from '@/lib/data/types';
 
+
 // Next.js 15+ searchParams is a Promise
 type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
 
@@ -57,6 +58,7 @@ export default async function ApprendrePage({
                     )}
                 </div>
                 <p className="text-gray-600">Fiches de révision essentielles et Livret du Citoyen.</p>
+
             </header>
 
             <LearningList
