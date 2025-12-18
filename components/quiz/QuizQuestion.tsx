@@ -127,6 +127,15 @@ export function QuizQuestion({
                             <span className="text-xs uppercase bg-blue-100 text-blue-700 px-2 py-1 rounded font-bold flex items-center">
                                 {question.theme}
                             </span>
+                            {question.difficulty && (
+                                <span className={`text-xs uppercase px-2 py-1 rounded font-bold flex items-center
+                                    ${question.difficulty === 'facile' ? 'bg-green-100 text-green-700' :
+                                        question.difficulty === 'moyen' ? 'bg-yellow-100 text-yellow-700' :
+                                            'bg-red-100 text-red-700'
+                                    }`}>
+                                    {question.difficulty}
+                                </span>
+                            )}
                         </div>
                     )}
                 </div>

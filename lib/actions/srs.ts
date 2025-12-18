@@ -87,7 +87,7 @@ export async function updateFlashcard(questionId: string, success: boolean) {
 
     const { error } = await supabase
         .from('user_flashcards')
-        .upsert({ ...matchData, ...updateData });
+        .upsert({ ...matchData, ...updateData }, { onConflict: 'user_id, question_id' });
 
     if (error) {
         console.error('Error updating flashcard:', error);
