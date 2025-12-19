@@ -64,7 +64,7 @@ export default function TesterPage() {
                                 <Timer className="w-8 h-8 text-red-600" />
                             </div>
                             <div>
-                                <CardTitle>Examen Blanc (Nouveau)</CardTitle>
+                                <CardTitle>Examen Blanc</CardTitle>
                                 <CardDescription>50 questions • 30 minutes</CardDescription>
                             </div>
                         </CardHeader>

@@ -123,7 +123,7 @@ export async function getRandomQuizQuestions(limit: number = 10) {
     const { data: allQuestions, error } = await supabase
         .from('questions')
         .select('id, difficulty')
-        .eq('type', 'quiz');
+        .in('type', ['quiz', 'interview']);
 
     if (error || !allQuestions || allQuestions.length === 0) {
         console.error('Error fetching question IDs:', error);
@@ -156,7 +156,6 @@ export async function getRandomQuizQuestions(limit: number = 10) {
     };
 
     // Adjust quotas to make sure they sum exactly to totalNeeded
-    // (Rounding might cause off-by-one errors)
     const currentSum = quotas.facile + quotas.moyen + quotas.difficile;
     const diff = totalNeeded - currentSum;
     if (diff !== 0) {
@@ -172,14 +171,7 @@ export async function getRandomQuizQuestions(limit: number = 10) {
         return shuffled.slice(0, n);
     };
 
-    // We try to fill quotas. If a bucket doesn't have enough, we take all of it 
-    // and note how many we still need.
     let deficiency = 0;
-
-    // Process strictly in order to handle deficiencies: Facile -> Difficile -> Moyen (as sink)
-    // Actually, a generic loop is better.
-
-    // First pass: take what we can for each category
     const taken: Record<string, number[]> = {
         facile: [],
         moyen: [],
@@ -192,14 +184,11 @@ export async function getRandomQuizQuestions(limit: number = 10) {
         const picked = pickRandom(available, needed);
         taken[key] = picked;
 
-        // If we didn't get enough, add to deficiency
         if (picked.length < needed) {
             deficiency += (needed - picked.length);
         }
     });
 
-    // If we have deficiency, try to fill it from other buckets ensuring we don't pick duplicates
-    // We already picked unique IDs from each bucket, so remaining items in buckets are available.
     if (deficiency > 0) {
         const allRemainingIds: number[] = [];
         (['facile', 'moyen', 'difficile'] as const).forEach(key => {
@@ -208,7 +197,6 @@ export async function getRandomQuizQuestions(limit: number = 10) {
             allRemainingIds.push(...remaining);
         });
 
-        // Pick random to fill deficiency
         const extras = pickRandom(allRemainingIds, deficiency);
         selectedIds = [
             ...taken.facile,
@@ -224,7 +212,7 @@ export async function getRandomQuizQuestions(limit: number = 10) {
         ];
     }
 
-    // Shuffle final selected IDs to mix difficulties
+    // Shuffle final selected IDs
     selectedIds = selectedIds.sort(() => 0.5 - Math.random());
 
     // 5. Fetch full details
@@ -233,13 +221,77 @@ export async function getRandomQuizQuestions(limit: number = 10) {
         .select('*')
         .in('id', selectedIds);
 
-    // Filter out invalid questions and shuffle again (order from DB isn't guaranteed)
-    // We want the order of 'data' to match 'selectedIds' to maintain the shuffle? 
-    // Actually, SQL 'IN' doesn't guarantee order. We should shuffle the final result array.
+    if (!data) return [];
 
-    const validQuestions = (data || []).filter(q => {
-        return q.options && Array.isArray(q.options) && q.options.length >= 2;
+    // 6. Post-process to ensure options exist (Generate distractors if needed)
+    // Use the fetched data pool to source distractors
+    const processedQuestions = data.map(q => {
+        let currentOptions = Array.isArray(q.options) ? [...q.options] : [];
+        const normalize = (s: string) => s.trim().toLowerCase();
+
+        // 1. Identify existing distractors (exclude the correct answer)
+        let existingDistractors = currentOptions.filter(opt => normalize(opt) !== normalize(q.answer));
+
+        // Deduplicate existing distractors
+        existingDistractors = Array.from(new Set(existingDistractors));
+
+        // If we already have 3 or more distractors, pick 3 and we're done
+        if (existingDistractors.length >= 3) {
+            return {
+                ...q,
+                options: [q.answer, ...existingDistractors.slice(0, 3)]
+            };
+        }
+
+        // 2. We need more distractors
+        const needed = 3 - existingDistractors.length;
+
+        // Generate candidates from other questions
+        const potentialDistractors = data
+            .filter(other => other.id !== q.id && normalize(other.answer) !== normalize(q.answer))
+            .map(d => d.answer);
+
+        // Filter out candidates that are already in existingDistractors
+        const uniqueCandidates = Array.from(new Set(potentialDistractors))
+            .filter(cand => !existingDistractors.some(ex => normalize(ex) === normalize(cand)));
+
+        // Prefer same theme
+        const sameThemeCandidates = uniqueCandidates.filter(ans => {
+            const org = data.find(d => d.answer === ans);
+            return org?.theme === q.theme;
+        });
+
+        let newDistractors = [];
+        if (sameThemeCandidates.length >= needed) {
+            newDistractors = sameThemeCandidates.sort(() => 0.5 - Math.random()).slice(0, needed);
+        } else {
+            // Fill with same theme first, then mixed
+            const remainingNeeded = needed - sameThemeCandidates.length;
+            const otherCandidates = uniqueCandidates.filter(c => !sameThemeCandidates.includes(c));
+
+            newDistractors = [
+                ...sameThemeCandidates,
+                ...otherCandidates.sort(() => 0.5 - Math.random()).slice(0, remainingNeeded)
+            ];
+        }
+
+        // If still not enough, use generic fillers
+        const fillers = ["Je ne sais pas", "Aucune des réponses", "Autre réponse"];
+        let fillerIdx = 0;
+        while (newDistractors.length + existingDistractors.length < 3) {
+            const filler = fillers[fillerIdx % fillers.length];
+            if (!newDistractors.includes(filler) && !existingDistractors.includes(filler)) {
+                newDistractors.push(filler);
+            }
+            fillerIdx++;
+        }
+
+        // 3. Combine everything
+        return {
+            ...q,
+            options: [q.answer, ...existingDistractors, ...newDistractors]
+        };
     });
 
-    return validQuestions.sort(() => 0.5 - Math.random());
+    return processedQuestions.sort(() => 0.5 - Math.random());
 }
