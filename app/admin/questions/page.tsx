@@ -10,6 +10,7 @@ export default async function QuestionsPage(props: {
     const searchParams = await props.searchParams;
     const query = typeof searchParams.query === 'string' ? searchParams.query : '';
     const theme = typeof searchParams.theme === 'string' ? searchParams.theme : '';
+    const type = typeof searchParams.type === 'string' ? searchParams.type : '';
     const editId = typeof searchParams.edit === 'string' ? searchParams.edit : null;
     const page = typeof searchParams.page === 'string' ? parseInt(searchParams.page) : 1;
     const pageSize = 10;
@@ -27,6 +28,10 @@ export default async function QuestionsPage(props: {
 
     if (theme) {
         dbQuery = dbQuery.eq('theme', theme);
+    }
+
+    if (type) {
+        dbQuery = dbQuery.eq('type', type);
     }
 
     const { data, count, error } = await dbQuery

@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils';
 import {
     LayoutDashboard,
     FileQuestion,
-    BookOpen,
+
     Flag,
     Menu,
     LogOut,
@@ -21,7 +21,7 @@ const navItems = [
     { label: 'Tableau de Bord', icon: LayoutDashboard, href: '/admin' },
     { label: 'Utilisateurs', icon: Users, href: '/admin/users' },
     { label: 'Questions', icon: FileQuestion, href: '/admin/questions' },
-    { label: 'Contenu', icon: BookOpen, href: '/admin/content' },
+
     { label: 'Signalements', icon: Flag, href: '/admin/feedback' },
 ];
 

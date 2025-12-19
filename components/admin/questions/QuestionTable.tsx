@@ -108,81 +108,109 @@ export function QuestionTable({
 
     return (
         <div className="space-y-4">
-            <div className="flex flex-col sm:flex-row gap-4 justify-between items-center bg-white dark:bg-slate-900 p-4 rounded-lg border border-gray-200 dark:border-slate-800 shadow-sm">
-                <div className="relative w-full sm:w-96">
-                    <Input
-                        placeholder="Rechercher une question..."
-                        value={searchTerm}
-                        onChange={(e) => handleSearch(e.target.value)}
-                        className="w-full"
-                    />
-                </div>
-                <div className="flex items-center gap-2 w-full sm:w-auto">
-                    <select
-                        className="h-10 rounded-md border border-gray-200 bg-white px-3 py-2 text-sm ring-offset-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 dark:border-slate-800 dark:bg-slate-950 dark:ring-offset-slate-950 dark:placeholder:text-slate-400 dark:focus-visible:ring-slate-300"
-                        onChange={(e) => {
-                            const params = new URLSearchParams(searchParams);
-                            if (e.target.value) params.set('theme', e.target.value);
-                            else params.delete('theme');
-                            router.push(`?${params.toString()}`);
-                        }}
-                        defaultValue={searchParams.get('theme') || ''}
-                    >
-                        <option value="">Tous les thèmes</option>
-                        <option value="Histoire">Histoire</option>
-                        <option value="Institutions">Institutions</option>
-                        <option value="Valeurs">Valeurs</option>
-                        <option value="Géographie">Géographie</option>
-                    </select>
+            {/* Filters Section */}
+            <div className="bg-white dark:bg-slate-900 p-4 rounded-lg border border-gray-200 dark:border-slate-800 shadow-sm space-y-4">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+                    {/* Search Bar - Full width on mobile/tablet, 4 columns on desktop */}
+                    <div className="lg:col-span-4 relative">
+                        <Input
+                            placeholder="Rechercher une question..."
+                            value={searchTerm}
+                            onChange={(e) => handleSearch(e.target.value)}
+                            className="w-full"
+                        />
+                    </div>
 
-                    <div className="flex gap-2">
-                        <label className="cursor-pointer inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-gray-200 bg-white hover:bg-gray-100 h-10 px-4 py-2 dark:border-slate-800 dark:bg-slate-950 dark:hover:bg-slate-800 dark:text-white">
-                            Import CSV
-                            <input
-                                type="file"
-                                accept=".csv"
-                                className="hidden"
-                                onChange={async (e) => {
-                                    const file = e.target.files?.[0];
-                                    if (!file) return;
-
-                                    const text = await file.text();
-                                    try {
-                                        // Dynamic import to keep bundle small? or just standard import
-                                        const { parseCSV } = await import('@/lib/admin/csv-import');
-                                        const { importQuestions } = await import('@/app/admin/questions/actions');
-
-                                        const data = parseCSV(text);
-                                        if (data.length === 0) {
-                                            alert('Aucune question trouvée dans le CSV.');
-                                            return;
-                                        }
-
-                                        if (confirm(`Importer ${data.length} questions ?`)) {
-                                            await importQuestions(data);
-                                            alert('Import réussi !');
-                                            router.refresh();
-                                        }
-                                    } catch (err) {
-                                        console.error(err);
-                                        alert('Erreur lors de l\'import.');
-                                    }
-                                    // Reset input
-                                    e.target.value = '';
+                    {/* Filters - Stack on mobile, inline on desktop */}
+                    <div className="lg:col-span-8 flex flex-col sm:flex-row gap-3 items-center justify-between flex-wrap">
+                        <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto flex-wrap">
+                            <select
+                                className="h-10 w-full sm:w-40 rounded-md border border-gray-200 bg-white px-3 py-2 text-sm ring-offset-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 dark:border-slate-800 dark:bg-slate-950 dark:ring-offset-slate-950 dark:placeholder:text-slate-400 dark:focus-visible:ring-slate-300"
+                                onChange={(e) => {
+                                    const params = new URLSearchParams(searchParams);
+                                    if (e.target.value) params.set('theme', e.target.value);
+                                    else params.delete('theme');
+                                    params.set('page', '1');
+                                    router.push(`?${params.toString()}`);
                                 }}
-                            />
-                        </label>
+                                defaultValue={searchParams.get('theme') || ''}
+                            >
+                                <option value="">Tous les thèmes</option>
+                                <option value="Histoire">Histoire</option>
+                                <option value="Institutions">Institutions</option>
+                                <option value="Valeurs">Valeurs</option>
+                                <option value="Géographie">Géographie</option>
+                            </select>
 
-                        <Button onClick={handleAddNew} className="whitespace-nowrap">
-                            <Plus className="w-4 h-4 mr-2" />
-                            Ajouter
-                        </Button>
+                            <select
+                                className="h-10 w-full sm:w-40 rounded-md border border-gray-200 bg-white px-3 py-2 text-sm ring-offset-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 dark:border-slate-800 dark:bg-slate-950 dark:ring-offset-slate-950 dark:placeholder:text-slate-400 dark:focus-visible:ring-slate-300"
+                                onChange={(e) => {
+                                    const params = new URLSearchParams(searchParams);
+                                    if (e.target.value) params.set('type', e.target.value);
+                                    else params.delete('type');
+                                    params.set('page', '1');
+                                    router.push(`?${params.toString()}`);
+                                }}
+                                defaultValue={searchParams.get('type') || ''}
+                            >
+                                <option value="">Tous les types</option>
+                                <option value="quiz">Quiz QCM</option>
+                                <option value="interview">Entretien</option>
+                            </select>
+                        </div>
+
+                        {/* Actions */}
+                        <div className="flex gap-2 w-full sm:w-auto">
+                            <label className="cursor-pointer flex-1 sm:flex-none inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-gray-200 bg-white hover:bg-gray-100 h-10 px-4 py-2 dark:border-slate-800 dark:bg-slate-950 dark:hover:bg-slate-800 dark:text-white">
+                                <span>Import CSV</span>
+                                <input
+                                    type="file"
+                                    accept=".csv"
+                                    className="hidden"
+                                    onChange={async (e) => {
+                                        const file = e.target.files?.[0];
+                                        if (!file) return;
+
+                                        const text = await file.text();
+                                        try {
+                                            const { parseCSV } = await import('@/lib/admin/csv-import');
+                                            const { importQuestions } = await import('@/app/admin/questions/actions');
+
+                                            const data = parseCSV(text);
+                                            if (data.length === 0) {
+                                                alert('Aucune question trouvée dans le CSV.');
+                                                return;
+                                            }
+
+                                            if (confirm(`Importer ${data.length} questions ?`)) {
+                                                await importQuestions(data);
+                                                alert('Import réussi !');
+                                                router.refresh();
+                                            }
+                                        } catch (err) {
+                                            console.error(err);
+                                            alert('Erreur lors de l\'import.');
+                                        }
+                                        e.target.value = '';
+                                    }}
+                                />
+                            </label>
+
+                            <Button onClick={handleAddNew} className="flex-1 sm:flex-none whitespace-nowrap">
+                                <Plus className="w-4 h-4 mr-2" />
+                                <span className="hidden sm:inline">Ajouter</span>
+                                <span className="sm:hidden">Ajouter</span>
+                            </Button>
+                        </div>
                     </div>
                 </div>
             </div>
 
+            {/* Content Section */}
             <div className="rounded-md border border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden">
-                <div className="overflow-x-auto">
+
+                {/* Desktop Table View */}
+                <div className="hidden lg:block overflow-x-auto">
                     <table className="w-full text-sm text-left">
                         <thead className="bg-gray-50 dark:bg-slate-950 text-gray-500 dark:text-gray-400 border-b border-gray-200 dark:border-slate-800">
                             <tr>
@@ -196,7 +224,7 @@ export function QuestionTable({
                         <tbody className="divide-y divide-gray-200 dark:divide-slate-800">
                             {questions.length === 0 ? (
                                 <tr>
-                                    <td colSpan={4} className="px-4 py-8 text-center text-gray-500">
+                                    <td colSpan={5} className="px-4 py-8 text-center text-gray-500">
                                         Aucune question trouvée.
                                     </td>
                                 </tr>
@@ -221,12 +249,9 @@ export function QuestionTable({
                                         )}
                                     </td>
                                     <td className="px-4 py-3 text-gray-500 dark:text-gray-400">
-                                        {/* Need 'type' in Question type, checking types.ts it might be missing or optional? 
-                                            Checking Step 24 file view: Question type has 'theme' but NO 'type' field explicitly typed!
-                                            However migration script Step 64 inserts 'type'. 
-                                            I should update types.ts locally or cast it. 
-                                            I will assume type exists in DB. */}
-                                        {q.type || 'N/A'}
+                                        <span className="font-mono text-xs text-slate-500">
+                                            {q.type === 'interview' ? 'Entretien' : 'Quiz'}
+                                        </span>
                                     </td>
                                     <td className="px-4 py-3 text-right">
                                         <div className="flex items-center justify-end gap-2">
@@ -247,6 +272,47 @@ export function QuestionTable({
                             ))}
                         </tbody>
                     </table>
+                </div>
+
+                {/* Mobile Card View */}
+                <div className="lg:hidden space-y-4 p-4">
+                    {questions.length === 0 ? (
+                        <div className="text-center text-gray-500 py-8">
+                            Aucune question trouvée.
+                        </div>
+                    ) : questions.map((q) => (
+                        <div key={q.id} className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-lg p-4 shadow-sm space-y-3">
+                            <div className="flex justify-between items-start">
+                                <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium capitalize mb-2
+                                    ${q.difficulty === 'facile' ? 'bg-green-100 text-green-700' :
+                                        q.difficulty === 'moyen' ? 'bg-yellow-100 text-yellow-700' :
+                                            'bg-red-100 text-red-700'}`}>
+                                    {q.difficulty || 'moyen'}
+                                </span>
+                                <div className="flex gap-1">
+                                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-gray-500 hover:text-blue-600" onClick={() => handleEdit(q)}>
+                                        <Edit className="w-4 h-4" />
+                                    </Button>
+                                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-gray-500 hover:text-red-600" onClick={() => handleDelete(q.id)}>
+                                        <Trash className="w-4 h-4" />
+                                    </Button>
+                                </div>
+                            </div>
+
+                            <h3 className="font-medium text-gray-900 dark:text-white text-base">
+                                {q.question}
+                            </h3>
+
+                            <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 pt-2 border-t border-gray-100 dark:border-slate-800">
+                                <span className="inline-flex items-center px-2 py-1 rounded-full bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-200">
+                                    {q.theme}
+                                </span>
+                                <span className="uppercase tracking-wider font-semibold">
+                                    {q.type === 'interview' ? 'Entretien' : 'Quiz'}
+                                </span>
+                            </div>
+                        </div>
+                    ))}
                 </div>
             </div>
 

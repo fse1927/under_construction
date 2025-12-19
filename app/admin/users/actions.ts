@@ -1,15 +1,36 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/admin';
 import { revalidatePath } from 'next/cache';
 
 export async function getUsers(query: string = '', page: number = 1) {
+    // 1. Verify current user is admin (Security Layer)
     const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user) {
+        throw new Error('Unauthorized');
+    }
+
+    // Check if user is admin in public table
+    const { data: currentUserProfile } = await supabase
+        .from('utilisateurs')
+        .select('is_admin')
+        .eq('id', user.id)
+        .single();
+
+    if (!currentUserProfile?.is_admin) {
+        throw new Error('Forbidden: Admin access required');
+    }
+
+    // 2. Fetch all users using Admin Client (Bypass RLS)
+    const adminSupabase = createAdminClient();
     const itemsPerPage = 10;
     const from = (page - 1) * itemsPerPage;
     const to = from + itemsPerPage - 1;
 
-    let dbQuery = supabase
+    let dbQuery = adminSupabase
         .from('utilisateurs')
         .select('*', { count: 'exact' })
         .order('created_at', { ascending: false })

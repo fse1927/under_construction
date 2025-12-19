@@ -23,18 +23,27 @@ export function QuestionSheet({ isOpen, onClose, question }: QuestionSheetProps)
         answer: '',
         theme: 'Histoire',
         difficulty: 'moyen',
-        options: ['', '', '', ''],
+
+        options: ['', '', ''],
         explanation: '',
         type: 'quiz'
     });
 
     useEffect(() => {
         if (question) {
+            // Visualize only Distractors (exclude Answer)
+            const normalize = (s: string) => s?.trim().toLowerCase();
+            const answerRate = normalize(question.answer);
+
+            const distractors = (question.options || [])
+                .filter(opt => normalize(opt) !== answerRate);
+
+            // Pad to 3 distractors
+            const paddedDistractors = [...distractors, '', '', ''].slice(0, 3);
+
             setFormData({
                 ...question,
-                options: question.options && question.options.length >= 4
-                    ? question.options
-                    : [...(question.options || []), '', '', '', ''].slice(0, 4)
+                options: paddedDistractors
             });
         } else {
             setFormData({
@@ -42,7 +51,7 @@ export function QuestionSheet({ isOpen, onClose, question }: QuestionSheetProps)
                 answer: '',
                 theme: 'Histoire',
                 difficulty: 'moyen',
-                options: ['', '', '', ''],
+                options: ['', '', ''],
                 explanation: '',
                 type: 'quiz'
             });
@@ -64,9 +73,22 @@ export function QuestionSheet({ isOpen, onClose, question }: QuestionSheetProps)
         setIsLoading(true);
 
         try {
+            // Combine Answer + Distractors for DB
+            const distractors = formData.options?.filter(o => o.trim() !== '') || [];
+            if (!formData.answer) {
+                alert("La réponse correcte est requise.");
+                setIsLoading(false);
+                return;
+            }
+
+            // Ensure Answer is included in options, but shuffle? 
+            // Or just store it. The quiz runner often shuffles.
+            // Storing [Answer, ...Distractors] is standard.
+            const fullOptions = [formData.answer, ...distractors];
+
             const payload = {
                 ...formData,
-                options: formData.options?.filter(o => o.trim() !== '') || []
+                options: fullOptions
             };
 
             const result = await upsertQuestion(payload);
@@ -175,18 +197,18 @@ export function QuestionSheet({ isOpen, onClose, question }: QuestionSheetProps)
                                 </div>
 
                                 <div className="space-y-3 p-4 bg-gray-50 dark:bg-slate-900 rounded-lg border border-gray-100 dark:border-slate-800">
-                                    <label className="text-sm font-bold leading-none">Options (Faux choix)</label>
-                                    {[0, 1, 2, 3].map((i) => (
+                                    <label className="text-sm font-bold leading-none">Mauvaises réponses (Distracteurs)</label>
+                                    {[0, 1, 2].map((i) => (
                                         <Input
                                             key={i}
                                             value={formData.options?.[i] || ''}
                                             onChange={e => handleOptionChange(i, e.target.value)}
-                                            placeholder={`Option ${i + 1}`}
+                                            placeholder={`Mauvaise réponse ${i + 1}`}
                                             className="bg-white dark:bg-slate-950"
                                         />
                                     ))}
                                     <p className="text-xs text-gray-500">
-                                        Remplissez pour un QCM (Quiz). Laissez vide pour une question ouverte simple.
+                                        Saisissez les 3 choix incorrects. La réponse correcte sera ajoutée automatiquement aux options.
                                     </p>
                                 </div>
 

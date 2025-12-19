@@ -1,24 +1,42 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/admin';
 
 export async function getDashboardStats() {
+    // 1. Security Check
     const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user) throw new Error('Unauthorized');
+
+    const { data: currentUserProfile } = await supabase
+        .from('utilisateurs')
+        .select('is_admin')
+        .eq('id', user.id)
+        .single();
+
+    if (!currentUserProfile?.is_admin) {
+        throw new Error('Forbidden');
+    }
+
+    // 2. Fetch Data with Admin Client
+    const adminSupabase = createAdminClient();
 
     // 1. Basic Counts
-    const { count: userCount } = await supabase.from('utilisateurs').select('id', { count: 'exact', head: true });
-    const { count: questionCount } = await supabase.from('questions').select('id', { count: 'exact', head: true });
+    const { count: userCount } = await adminSupabase.from('utilisateurs').select('id', { count: 'exact', head: true });
+    const { count: questionCount } = await adminSupabase.from('questions').select('id', { count: 'exact', head: true });
 
     // Feedbacks pending
     let feedbackCount = 0;
     try {
-        const { count } = await supabase.from('feedbacks_questions').select('id', { count: 'exact', head: true }).eq('status', 'pending');
+        const { count } = await adminSupabase.from('feedbacks_questions').select('id', { count: 'exact', head: true }).eq('status', 'pending');
         feedbackCount = count || 0;
     } catch (e) { }
 
     // 2. Recent Users (Last 5)
     // We need 'created_at' in utilisateurs table. Assuming migration is run.
-    const { data: recentUsers } = await supabase
+    const { data: recentUsers } = await adminSupabase
         .from('utilisateurs')
         .select('id, nom_prenom, email, is_admin, created_at')
         .order('created_at', { ascending: false })
@@ -33,7 +51,7 @@ export async function getDashboardStats() {
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-    const { data: rawTests } = await supabase
+    const { data: rawTests } = await adminSupabase
         .from('historique_tests')
         .select('date_test')
         .gte('date_test', thirtyDaysAgo.toISOString());
