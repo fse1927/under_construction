@@ -59,7 +59,7 @@ export default async function LearningDetailPage(props: PageProps) {
     };
 
     return (
-        <div className="p-4 pb-24 max-w-2xl mx-auto">
+        <div className="p-4 pb-32 max-w-2xl mx-auto">
 
 
             <QuestionNavigator
@@ -69,7 +69,7 @@ export default async function LearningDetailPage(props: PageProps) {
                 totalQuestions={adjacentQuestions.totalQuestions}
                 currentPosition={adjacentQuestions.currentPosition}
             >
-                <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
                     {/* Header Question */}
                     <div className="space-y-4">
                         <div className="flex gap-2 flex-wrap mt-4">
@@ -95,7 +95,7 @@ export default async function LearningDetailPage(props: PageProps) {
 
                     {/* Section Réponse (Mise en avant - Vert Clair) */}
                     <div className="relative overflow-hidden rounded-2xl bg-green-50 border border-green-200 text-green-900 shadow-sm">
-                        <div className="relative p-6 sm:p-6">
+                        <div className="relative p-6">
                             <div className="flex items-start gap-4">
                                 <div className="space-y-2">
                                     <h2 className="text-[11px] text-green-700 uppercase tracking-wider">Réponse:</h2>
@@ -108,8 +108,8 @@ export default async function LearningDetailPage(props: PageProps) {
                     </div>
 
                     {/* Section Explication (Détails) */}
-                    <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-gray-100 relative mb-4">
-                        <div className="flex flex-col sm:flex-row gap-6">
+                    <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 relative mb-4">
+                        <div className="flex flex-col gap-4">
                             <div className="space-y-4 flex-1">
                                 <h2 className="text-[11px] font-semibold text-gray-900 flex items-center gap-2">
                                     Comprendre & Retenir

@@ -8,17 +8,28 @@ interface UseSpeechSynthesisProps {
 export function useSpeechSynthesis({ onEnd, onError }: UseSpeechSynthesisProps = {}) {
     const [isSpeaking, setIsSpeaking] = useState(false);
     const [isSupported, setIsSupported] = useState(false);
+    const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
     const synthesisRef = useRef<SpeechSynthesisUtterance | null>(null);
 
     useEffect(() => {
         if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-
-            // eslint-disable-next-line
             setIsSupported(true);
+
+            const loadVoices = () => {
+                const availableVoices = window.speechSynthesis.getVoices();
+                setVoices(availableVoices);
+            };
+
+            loadVoices();
+            window.speechSynthesis.onvoiceschanged = loadVoices;
+
+            return () => {
+                window.speechSynthesis.onvoiceschanged = null;
+            }
         }
     }, []);
 
-    const speak = useCallback((text: string, options?: { rate?: number }) => {
+    const speak = useCallback((text: string, options?: { rate?: number; voice?: SpeechSynthesisVoice | null }) => {
         if (!isSupported) return;
 
         // Cancel previous
@@ -26,8 +37,20 @@ export function useSpeechSynthesis({ onEnd, onError }: UseSpeechSynthesisProps =
         setIsSpeaking(false);
 
         const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = "fr-FR";
-        utterance.rate = options?.rate ?? 0.95; // Default or custom
+
+        // Use selected voice or default to French
+        if (options?.voice) {
+            utterance.voice = options.voice;
+        } else {
+            // Fallback to a French voice if no specific voice selected
+            const frenchVoice = voices.find(v => v.lang.startsWith('fr'));
+            if (frenchVoice) {
+                utterance.voice = frenchVoice;
+            }
+            utterance.lang = "fr-FR";
+        }
+
+        utterance.rate = options?.rate ?? 1.0;
         utterance.pitch = 1.0;
 
         utterance.onstart = () => setIsSpeaking(true);
@@ -43,7 +66,7 @@ export function useSpeechSynthesis({ onEnd, onError }: UseSpeechSynthesisProps =
 
         synthesisRef.current = utterance;
         window.speechSynthesis.speak(utterance);
-    }, [isSupported, onEnd, onError]);
+    }, [isSupported, voices, onEnd, onError]);
 
     const stop = useCallback(() => {
         if (!isSupported) return;
@@ -64,6 +87,7 @@ export function useSpeechSynthesis({ onEnd, onError }: UseSpeechSynthesisProps =
         speak,
         stop,
         isSpeaking,
-        isSupported
+        isSupported,
+        voices
     };
 }
