@@ -77,7 +77,7 @@ export default async function LearningDetailPage(props: PageProps) {
                 <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
                     {/* Header Question */}
                     <div className="space-y-4">
-                        <div className="flex gap-2 flex-wrap">
+                        <div className="flex gap-2 flex-wrap mt-4">
                             <span className="inline-flex items-center px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-xs font-semibold uppercase tracking-wider shadow-sm border border-blue-100">
                                 {item.theme}
                             </span>
@@ -91,7 +91,7 @@ export default async function LearningDetailPage(props: PageProps) {
                             )}
                         </div>
 
-                        <h1 className="text-2xl font-bold text-gray-900 leading-tight tracking-tight">
+                        <h1 className="text-lg sm:text-2xl font-bold text-gray-900 leading-tight tracking-tight">
                             {item.title}
                         </h1>
 
@@ -103,14 +103,14 @@ export default async function LearningDetailPage(props: PageProps) {
 
                     {/* Section Réponse (Mise en avant - Vert Clair) */}
                     <div className="relative overflow-hidden rounded-2xl bg-green-50 border border-green-200 text-green-900 shadow-sm">
-                        <div className="relative p-6 sm:p-8">
+                        <div className="relative p-6 sm:p-6">
                             <div className="flex items-start gap-4">
                                 <div className="p-3 bg-green-200 rounded-xl shrink-0">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-green-700"><polyline points="20 6 9 17 4 12"></polyline></svg>
                                 </div>
                                 <div className="space-y-2">
-                                    <h2 className="text-sm font-semibold text-green-700 uppercase tracking-wider">Réponse Correcte</h2>
-                                    <p className="text-xl sm:text-2xl font-bold text-green-900 leading-relaxed">
+                                    <h2 className="text-sm font-semibold text-green-700 uppercase tracking-wider">Réponse</h2>
+                                    <p className="text-lg sm:text-2xl font-bold text-green-900 leading-relaxed">
                                         {item.answer}
                                     </p>
                                 </div>
@@ -119,7 +119,7 @@ export default async function LearningDetailPage(props: PageProps) {
                     </div>
 
                     {/* Section Explication (Détails) */}
-                    <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-gray-100 relative">
+                    <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-gray-100 relative mb-4">
                         <div className="flex flex-col sm:flex-row gap-6">
                             <div className="shrink-0 flex sm:block justify-center">
                                 <div className="p-3 bg-amber-50 text-amber-600 rounded-xl inline-block">
@@ -128,10 +128,10 @@ export default async function LearningDetailPage(props: PageProps) {
                                 </div>
                             </div>
                             <div className="space-y-4 flex-1">
-                                <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+                                <h2 className="text-lg sm:text-xl font-bold text-gray-900 flex items-center gap-2">
                                     Comprendre & Retenir
                                 </h2>
-                                <div className="prose prose-indigo max-w-none text-gray-600 leading-relaxed">
+                                <div className="prose prose-sm sm:prose-base prose-indigo max-w-none text-gray-600 leading-relaxed">
                                     <p>{item.explanation}</p>
                                 </div>
                             </div>

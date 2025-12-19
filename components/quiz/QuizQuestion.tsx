@@ -198,6 +198,23 @@ export function QuizQuestion({
                     )}
                 </div>
 
+                <div className="pt-4 flex justify-between items-center mt-auto">
+                    <Button variant="ghost" size="sm" onClick={onExit} className="text-gray-400 hover:text-red-500">
+                        Quitter
+                    </Button>
+
+                    <button
+                        onClick={onValidateOrNext}
+                        disabled={!selectedAnswer && (mode === 'exam' || !isAnswerChecked) && shuffledOptions.length > 0}
+                        className={`py-3 px-8 rounded-xl font-bold shadow-md transition-all flex items-center gap-2 ${(!selectedAnswer && !isAnswerChecked && shuffledOptions.length > 0)
+                            ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                            : 'bg-primary text-white hover:bg-blue-800 hover:-translate-y-0.5 active:translate-y-0'
+                            }`}
+                    >
+                        {!isAnswerChecked && mode === 'training' ? 'Valider' : (currentIndex < totalQuestions - 1 ? 'Suivant' : 'Terminer')}
+                    </button>
+                </div>
+
                 {/* Explanation Section */}
                 <AnimatePresence>
                     {isAnswerChecked && mode === 'training' && question.explanation && (
@@ -223,23 +240,6 @@ export function QuizQuestion({
                         </motion.div>
                     )}
                 </AnimatePresence>
-
-                <div className="pt-4 flex justify-between items-center mt-auto">
-                    <Button variant="ghost" size="sm" onClick={onExit} className="text-gray-400 hover:text-red-500">
-                        Quitter
-                    </Button>
-
-                    <button
-                        onClick={onValidateOrNext}
-                        disabled={!selectedAnswer && (mode === 'exam' || !isAnswerChecked) && shuffledOptions.length > 0}
-                        className={`py-3 px-8 rounded-xl font-bold shadow-md transition-all flex items-center gap-2 ${(!selectedAnswer && !isAnswerChecked && shuffledOptions.length > 0)
-                            ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                            : 'bg-primary text-white hover:bg-blue-800 hover:-translate-y-0.5 active:translate-y-0'
-                            }`}
-                    >
-                        {!isAnswerChecked && mode === 'training' ? 'Valider' : (currentIndex < totalQuestions - 1 ? 'Suivant' : 'Terminer')}
-                    </button>
-                </div>
             </div>
         </div>
     );

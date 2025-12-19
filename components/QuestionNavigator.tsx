@@ -160,7 +160,7 @@ export default function QuestionNavigator({
                         {/* Notebook binding effect */}
                         <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-primary/30 via-primary/50 to-primary/30" />
 
-                        <div className="pl-4">
+                        <div className="pl-4 pr-4">
                             {children}
                         </div>
                     </div>
