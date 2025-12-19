@@ -90,11 +90,9 @@ export default async function LearningDetailPage(props: PageProps) {
                                 </span>
                             )}
                         </div>
-
-                        <h1 className="text-lg sm:text-2xl font-bold text-gray-900 leading-tight tracking-tight">
+                        <h2 className="text-sm font-bold text-gray-900 flex items-center gap-2">
                             {item.title}
-                        </h1>
-
+                        </h2>
                         <div className="flex items-center justify-between pt-2">
                             <div className="text-sm text-gray-500 font-medium">Écouter la fiche</div>
                             <TextToSpeech text={item.fullText} />
@@ -105,10 +103,9 @@ export default async function LearningDetailPage(props: PageProps) {
                     <div className="relative overflow-hidden rounded-2xl bg-green-50 border border-green-200 text-green-900 shadow-sm">
                         <div className="relative p-6 sm:p-6">
                             <div className="flex items-start gap-4">
-
                                 <div className="space-y-2">
-                                    <h2 className="text-xs font-semibold text-green-700 uppercase tracking-wider">Réponse:</h2>
-                                    <p className="text-lg sm:text-2xl font-bold text-green-900 leading-relaxed">
+                                    <h2 className="text-[11px] text-green-700 uppercase tracking-wider">Réponse:</h2>
+                                    <p className="text-base sm:text-xl font-bold text-green-900 leading-relaxed">
                                         {item.answer}
                                     </p>
                                 </div>
@@ -119,19 +116,16 @@ export default async function LearningDetailPage(props: PageProps) {
                     {/* Section Explication (Détails) */}
                     <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-gray-100 relative mb-4">
                         <div className="flex flex-col sm:flex-row gap-6">
-
                             <div className="space-y-4 flex-1">
-                                <h2 className="text-lg sm:text-xl font-bold text-gray-900 flex items-center gap-2">
+                                <h2 className="text-[11px] font-semibold text-gray-900 flex items-center gap-2">
                                     Comprendre & Retenir
                                 </h2>
-                                <div className="prose prose-sm sm:prose-base prose-indigo max-w-none text-gray-600 leading-relaxed">
-                                    <p>{item.explanation}</p>
+                                <div className="text-xs text-gray-600 leading-relaxed whitespace-pre-line">
+                                    {item.explanation}
                                 </div>
                             </div>
                         </div>
                     </div>
-
-
                 </div>
             </QuestionNavigator>
         </div>
