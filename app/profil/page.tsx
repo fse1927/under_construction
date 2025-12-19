@@ -3,10 +3,11 @@ import { getGlobalProgress } from '@/lib/actions/user-progress';
 import { signout } from '@/app/(auth)/actions';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { User, Trophy, Activity, LogOut, Settings, Award } from 'lucide-react';
+import { User, Trophy, Activity, LogOut, Settings } from 'lucide-react';
 import { redirect } from 'next/navigation';
 import ThemeToggle from '@/components/ThemeToggle';
 import { HistoryChart } from '@/components/profile/HistoryChart';
+import { BadgesSection } from '@/components/profile/BadgesSection';
 import { AdminLink } from '@/components/admin/AdminLink';
 import { UserProgress } from '@/components/dashboard/UserProgress';
 import StreakCounter from '@/components/dashboard/StreakCounter';
@@ -263,31 +264,7 @@ export default async function ProfilPage() {
 
             {/* Badges Section */}
             <div className="animate-in fade-in slide-in-from-bottom-5 duration-700 delay-300">
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 dark:bg-slate-900 dark:border-slate-800">
-                    <h3 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2 dark:text-white">
-                        <Award className="w-5 h-5 text-yellow-500" />
-                        Mes Badges
-                    </h3>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                        {/* Badge 1 */}
-                        <div className={`p-4 rounded-xl border flex flex-col items-center gap-2 transition-all ${stats.totalTests >= 1 ? 'bg-yellow-50 border-yellow-200 dark:bg-yellow-900/10 dark:border-yellow-900/30 scale-100 shadow-sm' : 'bg-gray-50/50 border-gray-100 grayscale opacity-60 dark:bg-slate-800/50 dark:border-slate-800'}`}>
-                            <div className="text-3xl filter drop-shadow-sm">🌱</div>
-                            <p className={`text-xs font-bold ${stats.totalTests >= 1 ? 'text-yellow-800 dark:text-yellow-500' : 'text-gray-400'}`}>Débutant</p>
-                        </div>
-
-                        {/* Badge 2 */}
-                        <div className={`p-4 rounded-xl border flex flex-col items-center gap-2 transition-all ${stats.totalTests >= 5 ? 'bg-blue-50 border-blue-200 dark:bg-blue-900/10 dark:border-blue-900/30 scale-100 shadow-sm' : 'bg-gray-50/50 border-gray-100 grayscale opacity-60 dark:bg-slate-800/50 dark:border-slate-800'}`}>
-                            <div className="text-3xl filter drop-shadow-sm">📚</div>
-                            <p className={`text-xs font-bold ${stats.totalTests >= 5 ? 'text-blue-800 dark:text-blue-400' : 'text-gray-400'}`}>Assidu</p>
-                        </div>
-
-                        {/* Badge 3 */}
-                        <div className={`p-4 rounded-xl border flex flex-col items-center gap-2 transition-all ${stats.avgScore >= 80 && stats.totalTests >= 1 ? 'bg-purple-50 border-purple-200 dark:bg-purple-900/10 dark:border-purple-900/30 scale-100 shadow-sm' : 'bg-gray-50/50 border-gray-100 grayscale opacity-60 dark:bg-slate-800/50 dark:border-slate-800'}`}>
-                            <div className="text-3xl filter drop-shadow-sm">🎓</div>
-                            <p className={`text-xs font-bold ${stats.avgScore >= 80 ? 'text-purple-800 dark:text-purple-400' : 'text-gray-400'}`}>Expert</p>
-                        </div>
-                    </div>
-                </div>
+                <BadgesSection user={user} stats={stats} />
             </div>
         </div>
     );
