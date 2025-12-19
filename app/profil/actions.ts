@@ -4,6 +4,8 @@ import { createClient } from '@/lib/supabase/server'
 import { UserProfile, UserStats } from '@/lib/types'
 import { revalidatePath } from 'next/cache'
 
+// ... (imports remain)
+
 export async function getUserProfile(): Promise<{ user: UserProfile; stats: UserStats } | null> {
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
@@ -23,9 +25,9 @@ export async function getUserProfile(): Promise<{ user: UserProfile; stats: User
             .from('utilisateurs')
             .insert({
                 id: user.id,
-                nom_prenom: user.user_metadata?.full_name || 'Utilisateur',
+                surnom: user.user_metadata?.surnom || user.user_metadata?.full_name || 'Utilisateur',
                 profil_situation: user.user_metadata?.situation || 'Non défini',
-                email: user.email // Store email in public table if needed/schema allows, otherwise relying on join
+                email: user.email
             })
             .select()
             .single();
@@ -37,7 +39,7 @@ export async function getUserProfile(): Promise<{ user: UserProfile; stats: User
             // Return basic mock to avoid blocking login loop
             profile = {
                 id: user.id,
-                nom_prenom: user.user_metadata?.full_name || 'Utilisateur',
+                surnom: user.user_metadata?.surnom || 'Utilisateur',
                 profil_situation: user.user_metadata?.situation || 'Non défini',
                 email: user.email,
                 is_admin: false
@@ -53,26 +55,7 @@ export async function getUserProfile(): Promise<{ user: UserProfile; stats: User
         .order('date_test', { ascending: false })
         .limit(10)
 
-    const totalTests = await supabase
-        .from('historique_tests')
-        .select('id', { count: 'exact', head: true })
-        .eq('user_id', user.id)
-        .then(res => res.count || 0)
-
-    // Calculate average from all tests (we might want a separate query or just use the last 10? 
-    // Ideally avg should be global. Let's make a separate query for global avg if needed, 
-    // or just use the last 10 for simplicity in this MVP phrase.
-    // Actually, let's fetch ALL for stats, but only return last 10 for chart?
-    // Optimization: fetch average using database aggregation if possible, but for now fetching all scores (idk how many) might be heavy.
-    // Let's stick to simple: fetch last 50 for stats, return last 10 for chart.
-
-    // Efficient way:
-    // 1. Count total
-    // 2. Avg score (RPC or separate select) - let's just do a separate lightweight select for avg if we want accuracy.
-    // For now, let's keep it simple: fetched history is for the chart (last 10). 
-    // We need another query for global stats if we want them accurate.
-
-    // Let's rely on the previous logic but refine it.
+    // Calculate average 
     const { data: allScores } = await supabase
         .from('historique_tests')
         .select('score_pourcentage')
@@ -89,6 +72,7 @@ export async function getUserProfile(): Promise<{ user: UserProfile; stats: User
     return {
         user: {
             ...profile,
+            nickname: profile.surnom, // Map DB column 'surnom' to Type 'nickname'
             email: user.email
         } as UserProfile,
         stats: {
@@ -105,7 +89,7 @@ export async function updateUserProfile(formData: FormData) {
 
     if (!user) throw new Error('Not authenticated')
 
-    const nom_prenom = formData.get('nom_prenom') as string
+    const nickname = formData.get('nickname') as string
     const profil_situation = formData.get('profil_situation') as string
 
     // Extended profile fields
@@ -121,7 +105,7 @@ export async function updateUserProfile(formData: FormData) {
     const { error } = await supabase
         .from('utilisateurs')
         .update({
-            nom_prenom,
+            surnom: nickname,
             profil_situation,
             sexe: sexe || null,
             date_naissance: date_naissance || null,

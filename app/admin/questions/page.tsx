@@ -18,8 +18,10 @@ export default async function QuestionsPage(props: {
 
     const supabase = await createClient();
 
+    const tableName = type === 'interview' ? 'interviews' : 'questions';
+
     let dbQuery = supabase
-        .from('questions')
+        .from(tableName)
         .select('*', { count: 'exact' });
 
     if (query) {
@@ -30,7 +32,7 @@ export default async function QuestionsPage(props: {
         dbQuery = dbQuery.eq('theme', theme);
     }
 
-    if (type) {
+    if (type && type !== 'interview') {
         dbQuery = dbQuery.eq('type', type);
     }
 
@@ -59,7 +61,10 @@ export default async function QuestionsPage(props: {
         return <div>Error loading questions</div>;
     }
 
-    const questions = (data as Question[]) || [];
+    const questions = ((data as any[]) || []).map(q => ({
+        ...q,
+        type: q.type || (tableName === 'interviews' ? 'interview' : 'quiz')
+    })) as Question[];
 
     return (
         <div className="space-y-6">

@@ -11,7 +11,7 @@ export type ContenuApprentissage = {
 
 export type UserProfile = {
     id: string;
-    nom_prenom: string | null;
+    nickname: string | null;
     profil_situation: string | null;
     email?: string;
     is_admin?: boolean;

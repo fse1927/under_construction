@@ -34,7 +34,7 @@ export interface LearningContent {
 export interface UserProfile {
     id: string;
     email: string;
-    full_name?: string;
+    nickname?: string;
     xp: number;
     level: number;
     current_streak: number;

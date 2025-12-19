@@ -62,7 +62,7 @@ export default async function ProfilPage() {
                             <User className="w-8 h-8 text-primary dark:text-blue-400" />
                         </div>
                         <div className="space-y-1">
-                            <CardTitle className="text-xl dark:text-white">{user.nom_prenom || 'Apprenant'}</CardTitle>
+                            <CardTitle className="text-xl dark:text-white">{user.nickname || 'Apprenant'}</CardTitle>
                             <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">{user.email}</p>
                             {user.profil_situation && (
                                 <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-200 border border-blue-100 dark:border-blue-800/50 mt-1">
@@ -82,11 +82,11 @@ export default async function ProfilPage() {
                                 {/* Basic Info */}
                                 <div className="grid gap-4 sm:grid-cols-3">
                                     <div className="space-y-1.5">
-                                        <label className="text-xs font-medium text-gray-500 dark:text-gray-400">Nom Prénom</label>
+                                        <label className="text-xs font-medium text-gray-500 dark:text-gray-400">Surnom</label>
                                         <input
-                                            name="nom_prenom"
-                                            defaultValue={user.nom_prenom || ''}
-                                            placeholder="Votre nom complet"
+                                            name="nickname"
+                                            defaultValue={user.nickname || ''}
+                                            placeholder="Votre surnom"
                                             className="flex h-10 w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm shadow-sm transition-all focus:border-primary focus:ring-2 focus:ring-primary/20 dark:border-slate-700 dark:bg-slate-900 dark:text-white"
                                         />
                                     </div>

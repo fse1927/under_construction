@@ -17,7 +17,7 @@ export default async function FeedbackPage() {
             status,
             created_at,
             question:questions(id, question),
-            user:utilisateurs(nom_prenom, email)
+            user:utilisateurs(surnom, email)
         `)
         .order('created_at', { ascending: false });
 
@@ -57,7 +57,7 @@ export default async function FeedbackPage() {
                             <tr key={item.id} className="hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors">
                                 <td className="px-4 py-3">
                                     <div className="font-medium text-gray-900 dark:text-white">
-                                        {item.user?.nom_prenom || 'Inconnu'}
+                                        {item.user?.surnom || 'Inconnu'}
                                     </div>
                                     <div className="text-xs text-gray-500">
                                         {item.user?.email}

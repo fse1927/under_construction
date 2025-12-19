@@ -198,7 +198,7 @@ export async function getDailyStreak() {
     }
 
     // Check backwards
-    let currentCheck = new Date();
+    const currentCheck = new Date();
     if (streak === 1) {
         // If studied today, check from yesterday backwards
         currentCheck.setDate(currentCheck.getDate() - 1);

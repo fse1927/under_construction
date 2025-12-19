@@ -49,18 +49,21 @@ export async function upsertQuestion(question: Partial<Question>) {
     const payload: any = { ...question };
     delete payload.created_at; // distinct from editable fields
 
+    // Determine table
+    const table = question.type === 'interview' ? 'interviews' : 'questions';
+
     let error;
     if (question.id) {
         // Update
         const { error: updateError } = await supabase
-            .from('questions')
+            .from(table)
             .update(payload)
             .eq('id', question.id);
         error = updateError;
     } else {
         // Insert
         const { error: insertError } = await supabase
-            .from('questions')
+            .from(table)
             .insert(payload);
         error = insertError;
     }
@@ -74,11 +77,12 @@ export async function upsertQuestion(question: Partial<Question>) {
     return { success: true };
 }
 
-export async function deleteQuestion(id: string) {
+export async function deleteQuestion(id: string, type: string) {
     const supabase = await createClient();
+    const table = type === 'interview' ? 'interviews' : 'questions';
 
     const { error } = await supabase
-        .from('questions')
+        .from(table)
         .delete()
         .eq('id', id);
 

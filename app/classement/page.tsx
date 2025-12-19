@@ -83,7 +83,7 @@ export default async function LeaderboardPage() {
 
                             <div className="flex-1 min-w-0">
                                 <div className={`font-bold truncate ${isCurrentUser ? 'text-blue-700 dark:text-blue-400' : 'text-gray-900 dark:text-white'}`}>
-                                    {entry.nom_prenom}
+                                    {entry.surnom}
                                 </div>
                                 <div className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-2">
                                     <span className="font-semibold text-primary">{entry.xp} XP</span>

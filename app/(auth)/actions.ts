@@ -31,7 +31,7 @@ export async function signup(formData: FormData) {
 
     const email = formData.get('email') as string
     const password = formData.get('password') as string
-    const fullName = formData.get('fullName') as string
+    const nickname = formData.get('nickname') as string
     const situation = formData.get('situation') as string
 
     console.log('[Signup Action] Attempting signup for:', email)
@@ -42,7 +42,7 @@ export async function signup(formData: FormData) {
         options: {
             emailRedirectTo: `${origin}/auth/callback`,
             data: {
-                full_name: fullName,
+                surnom: nickname,
                 situation: situation,
             }
         }

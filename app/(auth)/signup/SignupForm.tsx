@@ -42,18 +42,18 @@ export function SignupForm() {
         <form ref={formRef} action={handleSubmit}>
             <div className="space-y-4 rounded-md shadow-sm">
                 <div>
-                    <label htmlFor="fullName" className="sr-only">Nom Prénom</label>
+                    <label htmlFor="nickname" className="sr-only">Surnom</label>
                     <div className="relative">
                         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <User className="h-5 w-5 text-gray-400" />
                         </div>
                         <input
-                            id="fullName"
-                            name="fullName"
+                            id="nickname"
+                            name="nickname"
                             type="text"
                             required
                             className="appearance-none rounded-lg relative block w-full pl-10 px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-primary focus:border-primary focus:z-10 sm:text-sm"
-                            placeholder="Nom Prénom"
+                            placeholder="Surnom"
                         />
                     </div>
                 </div>

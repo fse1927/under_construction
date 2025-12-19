@@ -38,7 +38,7 @@ export async function getDashboardStats() {
     // We need 'created_at' in utilisateurs table. Assuming migration is run.
     const { data: recentUsers } = await adminSupabase
         .from('utilisateurs')
-        .select('id, nom_prenom, email, is_admin, created_at')
+        .select('id, surnom, email, is_admin, created_at')
         .order('created_at', { ascending: false })
         .limit(5);
 
@@ -89,7 +89,7 @@ export async function getDashboardStats() {
             feedItems.push({
                 id: `user-${u.id}`,
                 type: 'user',
-                title: u.nom_prenom || 'Nouvel utilisateur',
+                title: u.surnom || 'Nouvel utilisateur',
                 description: `S'est inscrit avec ${u.email}`,
                 date: u.created_at,
                 meta: u.is_admin ? 'admin' : 'user'

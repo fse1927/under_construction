@@ -90,11 +90,11 @@ export function QuestionTable({
         setIsSheetOpen(true);
     };
 
-    const handleDelete = async (id: string) => {
+    const handleDelete = async (id: string, type: string) => {
         if (!confirm('Êtes-vous sûr de vouloir supprimer cette question ?')) return;
 
         try {
-            const res = await deleteQuestion(id);
+            const res = await deleteQuestion(id, type);
             if (res.error) {
                 alert('Erreur lors de la suppression');
             } else {
@@ -262,7 +262,7 @@ export function QuestionTable({
                                                 variant="ghost"
                                                 size="icon"
                                                 className="h-8 w-8 text-gray-500 hover:text-red-600"
-                                                onClick={() => handleDelete(q.id)}
+                                                onClick={() => handleDelete(q.id, q.type)}
                                             >
                                                 <Trash className="w-4 h-4" />
                                             </Button>
@@ -293,7 +293,7 @@ export function QuestionTable({
                                     <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-gray-500 hover:text-blue-600" onClick={() => handleEdit(q)}>
                                         <Edit className="w-4 h-4" />
                                     </Button>
-                                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-gray-500 hover:text-red-600" onClick={() => handleDelete(q.id)}>
+                                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-gray-500 hover:text-red-600" onClick={() => handleDelete(q.id, q.type)}>
                                         <Trash className="w-4 h-4" />
                                     </Button>
                                 </div>

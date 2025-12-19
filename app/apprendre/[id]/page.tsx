@@ -105,11 +105,9 @@ export default async function LearningDetailPage(props: PageProps) {
                     <div className="relative overflow-hidden rounded-2xl bg-green-50 border border-green-200 text-green-900 shadow-sm">
                         <div className="relative p-6 sm:p-6">
                             <div className="flex items-start gap-4">
-                                <div className="p-3 bg-green-200 rounded-xl shrink-0">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-green-700"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                                </div>
+
                                 <div className="space-y-2">
-                                    <h2 className="text-sm font-semibold text-green-700 uppercase tracking-wider">Réponse</h2>
+                                    <h2 className="text-xs font-semibold text-green-700 uppercase tracking-wider">Réponse:</h2>
                                     <p className="text-lg sm:text-2xl font-bold text-green-900 leading-relaxed">
                                         {item.answer}
                                     </p>
@@ -121,12 +119,7 @@ export default async function LearningDetailPage(props: PageProps) {
                     {/* Section Explication (Détails) */}
                     <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-gray-100 relative mb-4">
                         <div className="flex flex-col sm:flex-row gap-6">
-                            <div className="shrink-0 flex sm:block justify-center">
-                                <div className="p-3 bg-amber-50 text-amber-600 rounded-xl inline-block">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 14l9-5-9-5-9 5 9 5z"></path><path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"></path><path d="M12 14l9-5-9-5-9 5 9 5z"></path><path d="M12 14l9-5-9-5-9 5 9 5z"></path><path d="M12 14.5v-3.5"></path><path d="M12 14v4"></path><path d="M8 14v3"></path><path d="M16 14v3"></path></svg>
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
-                                </div>
-                            </div>
+
                             <div className="space-y-4 flex-1">
                                 <h2 className="text-lg sm:text-xl font-bold text-gray-900 flex items-center gap-2">
                                     Comprendre & Retenir

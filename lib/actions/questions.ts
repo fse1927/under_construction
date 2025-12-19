@@ -78,9 +78,8 @@ export async function getInterviewQuestions(userSituation?: string) {
     const supabase = await createClient();
 
     const { data: questions, error } = await supabase
-        .from('questions')
-        .select('*')
-        .eq('type', 'interview');
+        .from('interviews')
+        .select('*');
 
     if (error) {
         console.error('Error fetching interview questions:', error);
@@ -93,9 +92,6 @@ export async function getInterviewQuestions(userSituation?: string) {
 
     // Weighting/Sorting Logic
     // Prioritize questions where metadata->required_for contains userSituation
-    // Note: metadata is JSONB. We can do this sort in JS for flexibility or SQL.
-    // Given the dataset is small (~100 questions), JS sort is fine and flexible.
-
     const sortedDetails = questions.sort((a, b) => {
         const requiredA = (a.metadata as any)?.required_for || [];
         const requiredB = (b.metadata as any)?.required_for || [];

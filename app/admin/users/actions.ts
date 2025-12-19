@@ -37,7 +37,7 @@ export async function getUsers(query: string = '', page: number = 1) {
         .range(from, to);
 
     if (query) {
-        dbQuery = dbQuery.or(`nom_prenom.ilike.%${query}%,email.ilike.%${query}%`);
+        dbQuery = dbQuery.or(`surnom.ilike.%${query}%,email.ilike.%${query}%`);
     }
 
     const { data, error, count } = await dbQuery;
