@@ -4,6 +4,7 @@ import { useState } from 'react';
 import QuizRunner from '@/components/QuizRunner';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { BookOpen, HelpCircle, Timer } from 'lucide-react';
+import { PageHeader } from '@/components/ui/PageHeader';
 
 
 import { useRouter } from 'next/navigation';
@@ -24,10 +25,10 @@ export default function TesterPage() {
 
     return (
         <div className="p-4 pb-24 max-w-xl mx-auto space-y-6 animate-enter">
-            <header>
-                <h1 className="text-3xl font-bold text-primary">S&apos;entraîner</h1>
-                <p className="text-gray-600">Choisissez votre mode de test.</p>
-            </header>
+            <PageHeader
+                title="S'entraîner"
+                description="Choisissez votre mode de test."
+            />
 
             <div className="grid grid-cols-1 gap-6">
                 {/* Entraînement */}

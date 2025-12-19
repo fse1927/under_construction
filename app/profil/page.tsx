@@ -11,6 +11,7 @@ import { BadgesSection } from '@/components/profile/BadgesSection';
 import { AdminLink } from '@/components/admin/AdminLink';
 import { UserProgress } from '@/components/dashboard/UserProgress';
 import StreakCounter from '@/components/dashboard/StreakCounter';
+import { PageHeader } from '@/components/ui/PageHeader';
 
 export const dynamic = 'force-dynamic';
 
@@ -31,23 +32,23 @@ export default async function ProfilPage() {
 
     return (
         <div className="min-h-[calc(100vh-80px)] bg-gray-50/50 dark:bg-gray-950 p-4 pb-32 max-w-2xl mx-auto space-y-8">
-            <header className="flex items-center justify-between sticky top-0 z-30 bg-gray-50/80 dark:bg-gray-950/80 backdrop-blur-md py-4 -mx-4 px-4 border-b border-gray-200/50 dark:border-gray-800/50 transition-all">
-                <div>
-                    <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">Mon Profil</h1>
-                    <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Gérez votre progression et vos paramètres.</p>
-                </div>
-                <div className="flex items-center gap-2">
-                    <StreakCounter />
-                    <AdminLink isAdmin={user.is_admin || false} />
-                    <ThemeToggle />
-                    <form action={signout}>
-                        <Button variant="ghost" size="icon" className="text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-full transition-colors">
-                            <LogOut className="w-5 h-5" />
-                            <span className="sr-only">Se déconnecter</span>
-                        </Button>
-                    </form>
-                </div>
-            </header>
+            <PageHeader
+                title="Mon Profil"
+                description="Gérez votre progression et vos paramètres."
+                actions={
+                    <>
+                        <StreakCounter />
+                        <AdminLink isAdmin={user.is_admin || false} />
+                        <ThemeToggle />
+                        <form action={signout}>
+                            <Button variant="ghost" size="icon" className="text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-full transition-colors">
+                                <LogOut className="w-5 h-5" />
+                                <span className="sr-only">Se déconnecter</span>
+                            </Button>
+                        </form>
+                    </>
+                }
+            />
 
             {/* User Progress Section */}
             <div className="animate-in fade-in slide-in-from-bottom-5 duration-700 delay-50">

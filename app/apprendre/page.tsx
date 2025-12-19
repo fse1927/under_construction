@@ -3,6 +3,7 @@ import { getQuestions } from '@/lib/actions/questions';
 import { getUserProgressList } from '@/lib/actions/user-progress';
 import LearningList, { LearningItem } from '@/components/LearningList';
 import { Question } from '@/lib/data/types';
+import { PageHeader } from '@/components/ui/PageHeader';
 
 
 // Next.js 15+ searchParams is a Promise
@@ -48,18 +49,16 @@ export default async function ApprendrePage({
 
     return (
         <div className="p-4 pb-20 space-y-6">
-            <header>
-                <div className="flex items-center gap-3">
-                    <h1 className="text-3xl font-bold text-primary">Apprendre</h1>
-                    {difficulty && (
-                        <span className="bg-gradient-to-r from-gray-800 to-black text-white px-3 py-1 rounded-full text-sm font-bold capitalize animate-in slide-in-from-left-5">
-                            Niveau {difficulty}
-                        </span>
-                    )}
-                </div>
-                <p className="text-gray-600">Fiches de révision essentielles et Livret du Citoyen.</p>
-
-            </header>
+            <PageHeader
+                title="Apprendre"
+                description="Fiches de révision essentielles et Livret du Citoyen."
+            >
+                {difficulty && (
+                    <span className="bg-gradient-to-r from-gray-800 to-black text-white px-3 py-1 rounded-full text-sm font-bold capitalize animate-in slide-in-from-left-5">
+                        Niveau {difficulty}
+                    </span>
+                )}
+            </PageHeader>
 
             <LearningList
                 items={items}

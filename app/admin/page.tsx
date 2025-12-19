@@ -3,6 +3,7 @@ import { Activity, Users, FileQuestion, MessageCircle, TrendingUp, TrendingDown 
 import { getDashboardStats } from './dashboard-actions';
 import { GlobalActivityChart } from '@/components/admin/dashboard/GlobalActivityChart';
 import { RecentActivityFeed } from '@/components/admin/dashboard/RecentActivityFeed';
+import { PageHeader } from '@/components/ui/PageHeader';
 
 export default async function AdminDashboardPage() {
     // Fetch all stats via dedicated server action
@@ -10,15 +11,10 @@ export default async function AdminDashboardPage() {
 
     return (
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-5 duration-500">
-            {/* Header */}
-            <div className="flex flex-col gap-2">
-                <h1 className="text-3xl font-extrabold tracking-tight text-gray-900 dark:text-white bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-400">
-                    Tour de Contrôle
-                </h1>
-                <p className="text-gray-500 dark:text-gray-400 font-medium">
-                    Aperçu global de l&apos;activité.
-                </p>
-            </div>
+            <PageHeader
+                title="Tour de Contrôle"
+                description="Aperçu global de l'activité."
+            />
 
             {/* KPI Grid */}
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">

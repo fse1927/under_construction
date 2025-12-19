@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { BookOpen, CheckCircle, Star, Trophy, ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { getUserProgressList } from '@/lib/actions/user-progress';
+import { PageHeader } from '@/components/ui/PageHeader';
 
 export const metadata = {
     title: 'Parcours Guidé | Réussite France',
@@ -51,14 +52,10 @@ export default async function ParcoursPage() {
 
     return (
         <div className="container mx-auto p-4 max-w-4xl space-y-8 animate-enter">
-            <header className="text-center space-y-4 py-8">
-                <h1 className="text-3xl md:text-4xl font-black tracking-tight bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-                    Parcours d&apos;Apprentissage
-                </h1>
-                <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                    Progressez étape par étape. Validez chaque niveau pour débloquer le suivant et maîtriser tous les sujets de la naturalisation.
-                </p>
-            </header>
+            <PageHeader
+                title="Parcours d'Apprentissage"
+                description="Progressez étape par étape. Validez chaque niveau pour débloquer le suivant et maîtriser tous les sujets de la naturalisation."
+            />
 
             <div className="grid gap-6">
                 {levelStats.map((stat, index) => (

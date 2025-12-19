@@ -5,6 +5,7 @@ import { getUserProfile } from '@/app/profil/actions';
 import { getInterviewQuestions } from '@/lib/actions/questions';
 import { InterviewQuestion } from '@/components/interview/useInterview';
 import { Question } from '@/lib/data/types';
+import { PageHeader } from '@/components/ui/PageHeader';
 
 export const dynamic = 'force-dynamic';
 
@@ -29,17 +30,10 @@ export default async function EntretienPage() {
 
     return (
         <div className="p-4 pb-24 max-w-xl mx-auto space-y-6">
-            <header>
-                <div className="flex items-center gap-2 mb-2">
-                    <div className="bg-primary/10 p-2 rounded-lg">
-                        <MessageCircle className="w-6 h-6 text-primary" />
-                    </div>
-                </div>
-                <h1 className="text-3xl font-bold text-primary">Entretien</h1>
-                <p className="text-gray-600">
-                    Simulez les questions posées par l&apos;agent de préfecture.
-                </p>
-            </header>
+            <PageHeader
+                title="Entretien"
+                description="Simulez les questions posées par l'agent de préfecture."
+            />
 
             <InterviewSimulator userSituation={userSituation} questions={questions} />
         </div>

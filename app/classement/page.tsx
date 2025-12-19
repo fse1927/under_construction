@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { Trophy, Medal, Crown } from 'lucide-react'
 import { Card } from '@/components/ui/card'
+import { PageHeader } from '@/components/ui/PageHeader'
 
 export const dynamic = 'force-dynamic'
 
@@ -22,13 +23,10 @@ export default async function LeaderboardPage() {
 
     return (
         <div className="min-h-[calc(100vh-80px)] bg-gray-50/50 dark:bg-gray-950 p-4 pb-24 max-w-2xl mx-auto space-y-6">
-            <header className="text-center py-6">
-                <div className="inline-flex items-center justify-center p-3 bg-yellow-100 rounded-full mb-3 shadow-sm">
-                    <Trophy className="w-8 h-8 text-yellow-600" />
-                </div>
-                <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">Classement</h1>
-                <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mt-1">Les 50 meilleurs citoyens en herbe</p>
-            </header>
+            <PageHeader
+                title="Classement"
+                description="Les 50 meilleurs citoyens en herbe"
+            />
 
             {/* Current User Rank Card (Sticky or unique visual) */}
             {userRank && (
